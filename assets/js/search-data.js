@@ -83,17 +83,6 @@ ninja.data = [{
             window.location.href = "/blog/2025/dnn-fpga/";
           
         },
-      },{id: "post-neural-network-implementaiton-in-fpga-using-hls",
-        
-          title: "Neural Network implementaiton in FPGA using HLS",
-        
-        description: "",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/blog/2025/images/";
-          
-        },
       },{id: "post-a-post-with-plotly-js",
         
           title: "a post with plotly.js",
@@ -433,6 +422,17 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/blog/2015/code/";
+          
+        },
+      },{id: "post-a-post-with-images",
+        
+          title: "a post with images",
+        
+        description: "this is what included images could look like",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2015/images/";
           
         },
       },{id: "post-a-post-with-formatting-and-links",
