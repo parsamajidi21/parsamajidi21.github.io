@@ -451,16 +451,13 @@ ninja.data = [{
           description: "",
           section: "Books",handler: () => {
               window.location.href = "/books/the_godfather/";
-            },},{id: "news-a-simple-inline-announcement",
-          title: 'A simple inline announcement.',
-          description: "",
-          section: "News",},{id: "news-a-long-announcement-with-details",
-          title: 'A long announcement with details',
+            },},{id: "news-spi-tools-now-supports-android",
+          title: 'spi-tools now supports Android',
           description: "",
           section: "News",handler: () => {
               window.location.href = "/news/announcement_2/";
-            },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
-          title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
+            },},{id: "news-i-have-finally-completed-my-studies-and-graduated-in-october-2025",
+          title: 'I have finally completed my studies and graduated in October 2025!🍺',
           description: "",
           section: "News",},{id: "projects-project-1",
           title: 'project 1',
