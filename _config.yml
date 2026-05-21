@@ -191,6 +191,7 @@ exclude:
   - _pages/repositories.md
   - _pages/profiles.md
   - _posts/dropdown.md
+  - _pages/projects.md
   - _posts/2015*
   - _posts/2018*
   - _posts/2020*
