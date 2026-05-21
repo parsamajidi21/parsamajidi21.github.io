@@ -37,7 +37,18 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "/blog/";
               },
-            },{id: "post-day-1-getting-started",
+            },{id: "post-dynamic-layers-in-yocto",
+        
+          title: "Dynamic Layers in Yocto",
+        
+        description: "",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/yocto-dynamic-layers/";
+          
+        },
+      },{id: "post-day-1-getting-started",
         
           title: "Day 1: Getting Started",
         
