@@ -44,6 +44,20 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/exploring-kernel/";
           },
+        },{id: "nav-exploring-tinyml",
+          title: "Exploring TinyML",
+          description: "A journey through TinyML — deploying machine learning on microcontrollers and edge devices.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/exploring-tinyml/";
+          },
+        },{id: "nav-exploring-protocols",
+          title: "Exploring Protocols",
+          description: "A journey through communication protocols — from UART and SPI to I2C and beyond.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/exploring-protocols/";
+          },
         },{id: "dropdown-bookshelf",
               title: "bookshelf",
               description: "",
