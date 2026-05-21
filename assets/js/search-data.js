@@ -16,47 +16,12 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/blog/";
           },
-        },{id: "nav-exploring-yocto",
-          title: "Exploring Yocto",
-          description: "A journey through the Yocto Project — from basics to advanced recipes and layers.",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/exploring-yocto/";
-          },
-        },{id: "nav-exploring-rust",
-          title: "Exploring Rust",
-          description: "A journey through the Rust programming language — from ownership to async.",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/exploring-rust/";
-          },
         },{id: "nav-cv",
           title: "cv",
           description: "This is a description of the page. You can modify it in &#39;_pages/cv.md&#39;. You can also change or remove the top pdf download button.",
           section: "Navigation",
           handler: () => {
             window.location.href = "/cv/";
-          },
-        },{id: "nav-exploring-kernel",
-          title: "Exploring Kernel",
-          description: "A journey through Linux kernel device driver development — from modules to DMA.",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/exploring-kernel/";
-          },
-        },{id: "nav-exploring-tinyml",
-          title: "Exploring TinyML",
-          description: "A journey through TinyML — deploying machine learning on microcontrollers and edge devices.",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/exploring-tinyml/";
-          },
-        },{id: "nav-exploring-protocols",
-          title: "Exploring Protocols",
-          description: "A journey through communication protocols — from UART and SPI to I2C and beyond.",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/exploring-protocols/";
           },
         },{id: "dropdown-bookshelf",
               title: "bookshelf",
