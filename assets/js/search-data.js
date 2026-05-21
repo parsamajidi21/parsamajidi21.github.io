@@ -16,12 +16,33 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/blog/";
           },
+        },{id: "nav-exploring-yocto",
+          title: "Exploring Yocto",
+          description: "A journey through the Yocto Project — from basics to advanced recipes and layers.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/exploring-yocto/";
+          },
+        },{id: "nav-exploring-rust",
+          title: "Exploring Rust",
+          description: "A journey through the Rust programming language — from ownership to async.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/exploring-rust/";
+          },
         },{id: "nav-cv",
           title: "cv",
           description: "This is a description of the page. You can modify it in &#39;_pages/cv.md&#39;. You can also change or remove the top pdf download button.",
           section: "Navigation",
           handler: () => {
             window.location.href = "/cv/";
+          },
+        },{id: "nav-exploring-kernel",
+          title: "Exploring Kernel",
+          description: "A journey through Linux kernel device driver development — from modules to DMA.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/exploring-kernel/";
           },
         },{id: "dropdown-bookshelf",
               title: "bookshelf",
@@ -37,7 +58,40 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "/blog/";
               },
-            },{id: "post-neural-network-implementation-on-fpga-using-hls",
+            },{id: "post-day-1-getting-started",
+        
+          title: "Day 1: Getting Started",
+        
+        description: "",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/yocto-day1/";
+          
+        },
+      },{id: "post-day-1-getting-started",
+        
+          title: "Day 1: Getting Started",
+        
+        description: "",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/rust-day1/";
+          
+        },
+      },{id: "post-day-1-getting-started",
+        
+          title: "Day 1: Getting Started",
+        
+        description: "",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/kernel-device-driver-day1/";
+          
+        },
+      },{id: "post-neural-network-implementation-on-fpga-using-hls",
         
           title: "Neural Network Implementation on FPGA using HLS",
         
