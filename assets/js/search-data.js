@@ -37,9 +37,9 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "/blog/";
               },
-            },{id: "post-neural-network-implementaiton-in-fpga-using-hls",
+            },{id: "post-neural-network-implementation-on-fpga-using-hls",
         
-          title: "Neural Network implementaiton in FPGA using HLS",
+          title: "Neural Network Implementation on FPGA using HLS",
         
         description: "",
         section: "Posts",
