@@ -3,7 +3,7 @@ layout: page
 title: Exploring Kernel
 permalink: /exploring-kernel/
 description: A journey through Linux kernel device driver development — from modules to DMA.
-nav: true
+nav: false
 nav_order: 5
 ---
 

@@ -3,7 +3,7 @@ layout: page
 title: Exploring TinyML
 permalink: /exploring-tinyml/
 description: A journey through TinyML — deploying machine learning on microcontrollers and edge devices.
-nav: true
+nav: false
 nav_order: 6
 ---
 

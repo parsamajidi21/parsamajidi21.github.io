@@ -3,7 +3,7 @@ layout: page
 title: Exploring Protocols
 permalink: /exploring-protocols/
 description: A journey through communication protocols — from UART and SPI to I2C and beyond.
-nav: true
+nav: false
 nav_order: 7
 ---
 

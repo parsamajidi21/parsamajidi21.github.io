@@ -3,7 +3,7 @@ layout: page
 title: Exploring Yocto
 permalink: /exploring-yocto/
 description: A journey through the Yocto Project — from basics to advanced recipes and layers.
-nav: true
+nav: false
 nav_order: 3
 ---
 

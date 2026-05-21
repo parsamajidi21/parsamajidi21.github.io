@@ -3,7 +3,7 @@ layout: page
 title: Exploring Rust
 permalink: /exploring-rust/
 description: A journey through the Rust programming language — from ownership to async.
-nav: true
+nav: false
 nav_order: 4
 ---
 
