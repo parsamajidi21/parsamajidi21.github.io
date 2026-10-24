@@ -34,61 +34,6 @@ ninja.data = [{
             window.location.href = "/blog/2026/yocto-dynamic-layers/";
           
         },
-      },{id: "post-day-1-getting-started",
-        
-          title: "Day 1: Getting Started",
-        
-        description: "",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/blog/2026/yocto-day1/";
-          
-        },
-      },{id: "post-day-1-getting-started",
-        
-          title: "Day 1: Getting Started",
-        
-        description: "",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/blog/2026/tinyml-day1/";
-          
-        },
-      },{id: "post-day-1-getting-started",
-        
-          title: "Day 1: Getting Started",
-        
-        description: "",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/blog/2026/rust-day1/";
-          
-        },
-      },{id: "post-day-1-getting-started",
-        
-          title: "Day 1: Getting Started",
-        
-        description: "",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/blog/2026/protocols-day1/";
-          
-        },
-      },{id: "post-day-1-getting-started",
-        
-          title: "Day 1: Getting Started",
-        
-        description: "",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/blog/2026/kernel-device-driver-day1/";
-          
-        },
       },{id: "post-neural-network-implementation-on-fpga-using-hls",
         
           title: "Neural Network Implementation on FPGA using HLS",
