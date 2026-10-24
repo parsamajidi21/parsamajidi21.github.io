@@ -38,7 +38,7 @@ ninja.data = [{
         
           title: "Neural Network Implementation on FPGA using HLS",
         
-        description: "",
+        description: "Training a jet-tagging neural network in Keras, converting it to FPGA firmware with hls4ml, and wiring it to a hand-written VHDL UART on an Arty A7-100T.",
         section: "Posts",
         handler: () => {
           
