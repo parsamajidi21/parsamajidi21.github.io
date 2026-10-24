@@ -11,6 +11,6 @@ related_posts: true
 <!-- Write your article here -->
 # Introduction
 
-Hi, this is my first official blog after my graduation. It's been a while that I am working with Dynamic Layers in Yocto, and I thought it would be a good idea to share this as I remember there are not many resources available on this topic when I was learning.
+Hi, this is my first official blog post since my graduation. I've been working with Dynamic Layers in Yocto for a while, and I thought it would be a good idea to share what I've learned, since I remember there weren't many resources available on this topic when I was learning.
 
 # What are Dynamic Layers?
