@@ -27,7 +27,7 @@ ninja.data = [{
         
           title: "Dynamic Layers in Yocto",
         
-        description: "How BBFILES_DYNAMIC lets a Yocto layer ship optional recipes and bbappends that only activate when another layer is present, explained through meta-raspberrypi.",
+        description: "How BBFILES_DYNAMIC lets a Yocto layer ship optional recipes and bbappends that only activate when another layer is present, explained through meta-raspberrypi and a real i.MX95 BSP.",
         section: "Posts",
         handler: () => {
           
