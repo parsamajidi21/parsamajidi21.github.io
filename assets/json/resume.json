@@ -6,7 +6,7 @@
     "email": "majidii.parsa@gmail.com",
     "phone": "+39 3792239906",
     "url": "",
-    "summary": "Specializing in AI acceleration, firmware development, and low-level optimization for embedded Android and Linux platforms. Currently contributing at Kynetics, focusing on BSP integration, driver development, and performance tuning. Passionate about optimizing embedded architectures and pushing the boundaries of AI-driven system design.",
+    "summary": "Embedded Systems Engineer with expertise in Linux/Android BSP bring-up and low-level firmware across embedded Linux and Android platforms. At Kynetics, I work on board enablement, driver integration, and performance tuning, using oscilloscopes/logic analyzers and JTAG to diagnose hardware–software issues. Graduated M.Sc. in ICT (Smart Industry 4.0) with research interests in real-time embedded computing and efficient edge AI. Passionate about building reliable, production-ready systems from schematic to kernel to application.",
     "location": {
       "address": "",
       "postalCode": "",
@@ -30,27 +30,26 @@
   "work": [
     {
       "name": "Kynetics Inc.",
-      "position": "Firmware Embedded Systems Engineer",
+      "position": "Firmware | Embedded Systems Engineer",
       "employmentType": "Apprentice",
-      "location": "Padova, Italy",
+      "location": "Padova, IT",
       "url": "",
       "startDate": "2024-08-01",
       "endDate": "Present",
-      "summary": "Focusing on BSP integration, driver development, and performance tuning.",
+      "summary": "C/C++, Android/Linux BSPs, Firmware, Kernel, OTA",
       "highlights": [
-        "Developed and integrated USB Power Delivery (PD) firmware in C, increasing USB-C hub compatibility from 40% to 80%",
-        "Developed and ported Android (AOSP) and Linux BSPs for custom hardware platforms",
-        "Implemented and debugged kernel device drivers (Ethernet, I2C, CAN, Bluetooth)",
-        "Utilized tools such as logic analyzers, oscilloscopes, and JTAG debuggers for low-level debugging",
-        "Contributed to the spi-tools open-source project",
-        "Built demo Android applications to test firmware and hardware integration"
+        "Developed and integrated PD firmware in C for a custom iPad stand, increasing third-party USB-C hub interoperability from 40% to 90%",
+        "Ported and maintained Android (AOSP) and Linux BSPs, configuring bootloaders and kernel parameters for custom ARM-based hardware platforms",
+        "Debugged device drivers for Ethernet, I2C, CAN, and Bluetooth; resolved low-level hardware–software conflicts using JTAG, oscilloscopes, and logic analyzers",
+        "Ported and configured PipeWire, PulseAudio, and BlueALSA for custom Linux builds; optimized Bluetooth A2DP/HFP profiles for better audio performance",
+        "Upstreamed code to the <a href=\"https://github.com/cpb-/spi-tools\">spi-tools</a> project to improve the SPI bus utility for the broader developer community (commit 31c8a46)"
       ]
     },
     {
       "name": "Kynetics Inc.",
-      "position": "Firmware Embedded Systems Engineer",
+      "position": "Firmware | Embedded Systems Engineer",
       "employmentType": "Part-time",
-      "location": "Padova, Italy",
+      "location": "Padova, IT",
       "url": "",
       "startDate": "2024-03-01",
       "endDate": "2024-07-01",
@@ -59,9 +58,9 @@
     },
     {
       "name": "Kynetics Inc.",
-      "position": "Firmware Embedded Systems Engineer",
+      "position": "Firmware | Embedded Systems Engineer",
       "employmentType": "Internship",
-      "location": "Padova, Italy",
+      "location": "Padova, IT",
       "url": "",
       "startDate": "2023-09-01",
       "endDate": "2024-02-01",
@@ -80,7 +79,11 @@
       "startDate": "2022-10-01",
       "endDate": "2025-10-01",
       "score": "",
-      "courses": ["Thesis: Implementation of Tree Tensor Networks on the AI Engine of Versal adaptive SoCs"]
+      "courses": [
+        "Supervisor: Prof. Andrea Triossi",
+        "Thesis: Implementation of Tree Tensor Networks, a quantum-inspired machine learning algorithm, on the AI Engine of Versal adaptive SoCs for ultra-low latency applications",
+        "Vitis, Intrinsics APIs, AIE APIs, Quantum Machine Learning Algorithms, Versal Architecture, Multiply-Accumulate"
+      ]
     },
     {
       "institution": "University of Mazandaran, Iran",
@@ -91,7 +94,7 @@
       "startDate": "2018-10-01",
       "endDate": "2022-07-01",
       "score": "3.66/4.00",
-      "courses": ["Thesis: Driver Drowsiness Detection"]
+      "courses": ["Thesis: Driver Drowsiness Detection (grade 20/20)", "TensorFlow Lite, OpenCV, Image Processing, Raspberry Pi, TinyML"]
     }
   ],
   "awards": [],
@@ -102,37 +105,37 @@
       "name": "Programming",
       "level": "",
       "icon": "fa-solid fa-code",
-      "keywords": ["C/C++", "Python", "Verilog", "VHDL", "Rust", "Java", "CUDA"]
+      "keywords": ["C/C++", "Python", "Rust", "Verilog", "VHDL"]
     },
     {
-      "name": "Embedded",
+      "name": "Embedded Systems",
       "level": "",
       "icon": "fa-solid fa-microchip",
-      "keywords": ["Embedded Linux", "Android/Linux BSP", "FPGA", "Yocto", "ARM", "QEMU", "PCB"]
+      "keywords": ["Embedded Linux", "Android/Linux BSP", "FPGA", "Yocto", "QEMU", "PCB"]
     },
     {
       "name": "Debugging",
       "level": "",
       "icon": "fa-solid fa-bug",
-      "keywords": ["JTAG", "GDB", "Logic Analyzer"]
+      "keywords": ["JTAG", "GDB", "Logic Analyzers"]
     },
     {
-      "name": "Protocols",
+      "name": "Communication",
       "level": "",
       "icon": "fa-solid fa-network-wired",
-      "keywords": ["Ethernet", "I2C", "UART", "SPI", "CAN"]
+      "keywords": ["Ethernet", "I2C", "UART", "SPI", "CAN", "Bluetooth", "PulseAudio", "BlueALSA", "PipeWire"]
     },
     {
-      "name": "Software",
+      "name": "Dev Software",
       "level": "",
       "icon": "fa-solid fa-laptop-code",
       "keywords": ["Vitis Unified IDE", "Vivado", "Altium Designer"]
     },
     {
-      "name": "Tools",
+      "name": "Tools & Platforms",
       "level": "",
       "icon": "fa-solid fa-toolbox",
-      "keywords": ["Docker", "Git", "Jira", "Bitbucket", "Github"]
+      "keywords": ["Docker", "Git", "Jira", "Bitbucket", "GitHub"]
     }
   ],
   "languages": [
@@ -148,7 +151,7 @@
     },
     {
       "language": "Italian",
-      "fluency": "Intermediate",
+      "fluency": "Basic",
       "icon": ""
     }
   ],
@@ -172,7 +175,7 @@
       "highlights": ["Integrated with a custom VHDL-based UART module for real-time serial communication"],
       "startDate": "",
       "endDate": "",
-      "url": ""
+      "url": "https://github.com/parsamajidi21/DNN-FPGA"
     },
     {
       "name": "Programming the TurtleBot for Following a Path",

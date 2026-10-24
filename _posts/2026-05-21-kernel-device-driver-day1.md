@@ -1,5 +1,6 @@
 ---
 layout: post
+published: false # hidden until notes are written
 title: "Day 1: Getting Started"
 date: 2026-05-21 15:00:00
 tags: kernel linux
