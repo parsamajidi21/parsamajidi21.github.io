@@ -2,7 +2,7 @@
 - name: Embedded Linux & BSP
   keywords: [Yocto Project / Poky, Linux Kernel, BSP Development, Device Tree, U-Boot]
 - name: Hardware & Architecture
-  keywords: [ARM64, iMX6 / iMX8 / iMX9, SoC / SoM bring-up]
+  keywords: [ARM64, iMX8 / iMX9, SoC / SoM bring-up]
 - name: Programming
   keywords: [C / C++, Python, Bash]
 - name: DevOps & Tooling
