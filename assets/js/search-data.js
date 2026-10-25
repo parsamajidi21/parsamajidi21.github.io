@@ -25,7 +25,7 @@ ninja.data = [{
           },
         },{id: "nav-cv",
           title: "CV",
-          description: "Embedded systems engineer working on Android &amp; Linux BSPs, kernel drivers, and AI acceleration.",
+          description: "Embedded Linux &amp; Android BSP Engineer.",
           section: "Navigation",
           handler: () => {
             window.location.href = "/cv/";
