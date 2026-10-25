@@ -5,7 +5,7 @@ title: CV
 nav: true
 nav_order: 5
 cv_pdf: cv.pdf
-description: Embedded systems engineer working on Android & Linux BSPs, kernel drivers, and AI acceleration.
+description: Embedded Linux & Android BSP Engineer.
 toc:
   sidebar: left
 ---

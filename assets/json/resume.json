@@ -1,12 +1,12 @@
 {
   "basics": {
     "name": "Parsa Majidi",
-    "label": "Embedded Systems Engineer",
+    "label": "Embedded Linux & Android BSP Engineer",
     "image": "",
     "email": "majidii.parsa@gmail.com",
-    "phone": "+39 3792239906",
-    "url": "",
-    "summary": "Embedded Systems Engineer with expertise in Linux/Android BSP bring-up and low-level firmware across embedded Linux and Android platforms. At Kynetics, I work on board enablement, driver integration, and performance tuning, using oscilloscopes/logic analyzers and JTAG to diagnose hardware–software issues. Graduated M.Sc. in ICT (Smart Industry 4.0) with research interests in real-time embedded computing and efficient edge AI. Passionate about building reliable, production-ready systems from schematic to kernel to application.",
+    "phone": "+39 379 223 9906",
+    "url": "https://parsamajidi21.github.io",
+    "summary": "Embedded Linux and Android BSP Engineer with 2+ years of experience in BSP development, hardware bring-up, and low-level debugging on ARM-based platforms, including NXP i.MX SoCs. Experienced in Linux kernel and device tree customization, bootloader configuration, and hardware/software integration. M.Sc. thesis focused on ML acceleration using AMD Versal AI Engines, with a strong interest in on-device ML deployment and training.",
     "location": {
       "address": "",
       "postalCode": "",
@@ -27,126 +27,123 @@
       }
     ]
   },
-  "work": [
-    {
-      "name": "Kynetics Inc.",
-      "position": "Firmware | Embedded Systems Engineer",
-      "employmentType": "Apprentice",
-      "location": "Padova, IT",
-      "url": "",
-      "startDate": "2024-08-01",
-      "endDate": "Present",
-      "summary": "C/C++, Android/Linux BSPs, Firmware, Kernel, OTA",
-      "highlights": [
-        "Developed and integrated PD firmware in C for a custom iPad stand, increasing third-party USB-C hub interoperability from 40% to 90%",
-        "Ported and maintained Android (AOSP) and Linux BSPs, configuring bootloaders and kernel parameters for custom ARM-based hardware platforms",
-        "Debugged device drivers for Ethernet, I2C, CAN, and Bluetooth; resolved low-level hardware–software conflicts using JTAG, oscilloscopes, and logic analyzers",
-        "Ported and configured PipeWire, PulseAudio, and BlueALSA for custom Linux builds; optimized Bluetooth A2DP/HFP profiles for better audio performance",
-        "Upstreamed code to the <a href=\"https://github.com/cpb-/spi-tools\">spi-tools</a> project to improve the SPI bus utility for the broader developer community (commit 31c8a46)"
-      ]
-    },
-    {
-      "name": "Kynetics Inc.",
-      "position": "Firmware | Embedded Systems Engineer",
-      "employmentType": "Part-time",
-      "location": "Padova, IT",
-      "url": "",
-      "startDate": "2024-03-01",
-      "endDate": "2024-07-01",
-      "summary": "",
-      "highlights": []
-    },
-    {
-      "name": "Kynetics Inc.",
-      "position": "Firmware | Embedded Systems Engineer",
-      "employmentType": "Internship",
-      "location": "Padova, IT",
-      "url": "",
-      "startDate": "2023-09-01",
-      "endDate": "2024-02-01",
-      "summary": "",
-      "highlights": []
-    }
-  ],
-  "volunteer": [],
-  "education": [
-    {
-      "institution": "University of Padova, Italy",
-      "location": "Padova, Italy",
-      "url": "",
-      "area": "ICT for Internet and Multimedia - Smart Industry 4.0",
-      "studyType": "M.S.",
-      "startDate": "2022-10-01",
-      "endDate": "2025-10-01",
-      "score": "",
-      "courses": [
-        "Supervisor: Prof. Andrea Triossi",
-        "Thesis: Implementation of Tree Tensor Networks, a quantum-inspired machine learning algorithm, on the AI Engine of Versal adaptive SoCs for ultra-low latency applications",
-        "Vitis, Intrinsics APIs, AIE APIs, Quantum Machine Learning Algorithms, Versal Architecture, Multiply-Accumulate"
-      ]
-    },
-    {
-      "institution": "University of Mazandaran, Iran",
-      "location": "Iran",
-      "url": "",
-      "area": "Electrical Engineering",
-      "studyType": "B.S.",
-      "startDate": "2018-10-01",
-      "endDate": "2022-07-01",
-      "score": "3.66/4.00",
-      "courses": ["Thesis: Driver Drowsiness Detection (grade 20/20)", "TensorFlow Lite, OpenCV, Image Processing, Raspberry Pi, TinyML"]
-    }
-  ],
-  "awards": [],
-  "certificates": [],
-  "publications": [],
   "skills": [
+    {
+      "name": "Embedded Platforms",
+      "level": "",
+      "icon": "fa-solid fa-microchip",
+      "keywords": ["Embedded Linux", "Android AOSP", "Yocto Project", "BSP Development", "ARM-Based Systems"]
+    },
+    {
+      "name": "Low-Level Development",
+      "level": "",
+      "icon": "fa-solid fa-memory",
+      "keywords": ["Linux Kernel Customization", "Device Trees", "U-Boot", "Hardware Bring-Up", "Hardware/Software Integration", "Embedded Debugging"]
+    },
     {
       "name": "Programming",
       "level": "",
       "icon": "fa-solid fa-code",
-      "keywords": ["C/C++", "Python", "Rust", "Verilog", "VHDL"]
+      "keywords": ["C", "C++", "Python", "VHDL", "Verilog"]
     },
     {
-      "name": "Embedded Systems",
-      "level": "",
-      "icon": "fa-solid fa-microchip",
-      "keywords": ["Embedded Linux", "Android/Linux BSP", "FPGA", "Yocto", "QEMU", "PCB"]
-    },
-    {
-      "name": "Debugging",
-      "level": "",
-      "icon": "fa-solid fa-bug",
-      "keywords": ["JTAG", "GDB", "Logic Analyzers"]
-    },
-    {
-      "name": "Communication",
+      "name": "Hardware & Interfaces",
       "level": "",
       "icon": "fa-solid fa-network-wired",
-      "keywords": ["Ethernet", "I2C", "UART", "SPI", "CAN", "Bluetooth", "PulseAudio", "BlueALSA", "PipeWire"]
+      "keywords": ["I2C", "SPI", "Bluetooth", "CAN", "Oscilloscope", "Logic Analyzer"]
     },
     {
-      "name": "Dev Software",
-      "level": "",
-      "icon": "fa-solid fa-laptop-code",
-      "keywords": ["Vitis Unified IDE", "Vivado", "Altium Designer"]
-    },
-    {
-      "name": "Tools & Platforms",
+      "name": "Tools",
       "level": "",
       "icon": "fa-solid fa-toolbox",
-      "keywords": ["Docker", "Git", "Jira", "Bitbucket", "GitHub"]
+      "keywords": ["Git", "Docker"]
+    }
+  ],
+  "work": [
+    {
+      "name": "Kynetics",
+      "position": "Embedded Systems Engineer",
+      "location": "Padova, IT",
+      "url": "",
+      "startDate": "2024-08-01",
+      "endDate": "Present",
+      "summary": "",
+      "highlights": [
+        "Develop and maintain BSPs for Android- and Yocto-based embedded platforms.",
+        "Integrate hardware and software components on ARM-based systems.",
+        "Customize Linux kernels, device trees, and bootloader configurations.",
+        "Debug peripheral drivers and investigate hardware integration issues through schematic analysis."
+      ],
+      "contributions": [
+        "Integrated third-party vendor components, including HALs, proprietary binaries, and VINTF manifests, into Android BSPs.",
+        "Integrated dual-modem Android Radio HAL support on an NXP platform for Quectel EG25-G and Eagle modems, including per-modem VINTF configuration, RIL setup, and SELinux policy.",
+        "Integrated MIPI CSI-2 camera sensors, including AR2020 and AR0246, on the NXP i.MX95 using vendor kernel drivers and device-tree configuration.",
+        "Developed USB Power Delivery firmware in C for a custom iPad stand, improving third-party USB-C hub interoperability from 40% to 90% across tests involving 10 different hub vendors."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "spi-tools",
+      "summary": "Contributed upstream (<a href=\"https://github.com/cpb-/spi-tools/commit/31c8a46b7ac4375c173aa2f4f475f78a9296725f\">commit 31c8a46</a>).",
+      "highlights": [],
+      "startDate": "",
+      "endDate": "",
+      "url": "https://github.com/cpb-/spi-tools"
+    },
+    {
+      "name": "DNN-FPGA",
+      "summary": "Implemented a Keras neural network on an Artix-7 FPGA using HLS4ML, with a custom VHDL UART interface.",
+      "highlights": ["<a href=\"/blog/2024/dnn-fpga/\">Project details</a>"],
+      "startDate": "",
+      "endDate": "",
+      "url": "https://github.com/parsamajidi21/DNN-FPGA"
+    },
+    {
+      "name": "ImageUploader",
+      "summary": "Developed fixes for a C fork of USBImager, addressing false success reports when writing truncated images and additional pax-archive and backup-related bugs.",
+      "highlights": [],
+      "startDate": "",
+      "endDate": "",
+      "url": "https://github.com/parsamajidi21/ImageUploader"
+    }
+  ],
+  "education": [
+    {
+      "institution": "University of Padova",
+      "location": "Padova, Italy",
+      "url": "",
+      "area": "ICT for Internet and Multimedia",
+      "studyType": "M.Sc.",
+      "startDate": "2022-10-01",
+      "endDate": "2025-10-01",
+      "score": "",
+      "courses": [
+        "Thesis: <a href=\"/thesis/\">Tree Tensor Networks on AMD Versal AI Engines</a>",
+        "Skills: Vitis, AIE intrinsics and APIs, Versal architecture, quantum-inspired ML (Tree Tensor Networks)"
+      ]
+    },
+    {
+      "institution": "University of Mazandaran",
+      "location": "Iran",
+      "url": "",
+      "area": "Electrical Engineering",
+      "studyType": "B.Sc.",
+      "startDate": "2018-10-01",
+      "endDate": "2022-07-01",
+      "score": "",
+      "courses": ["GPA: 3.66/4.00"]
     }
   ],
   "languages": [
     {
-      "language": "English",
-      "fluency": "Professional Proficiency",
+      "language": "Persian",
+      "fluency": "Native",
       "icon": ""
     },
     {
-      "language": "Persian",
-      "fluency": "Native",
+      "language": "English",
+      "fluency": "Professional working proficiency",
       "icon": ""
     },
     {
@@ -155,47 +152,10 @@
       "icon": ""
     }
   ],
+  "volunteer": [],
+  "awards": [],
+  "certificates": [],
+  "publications": [],
   "interests": [],
-  "references": [],
-  "projects": [
-    {
-      "name": "ImageUploader: USB and SD card image flasher",
-      "summary": "Cross-platform C tool to flash disk images to USB drives and SD cards and back them up. A modernized fork of USBImager by bzt.",
-      "highlights": [
-        "Redesigned the GTK interface with a header bar, drag and drop, and light/dark theme support",
-        "Fixed truncated images being reported as written successfully, plus backup, pax archive, and X11 crash bugs",
-        "Set up GitHub Actions builds for Windows and macOS and released v1.0.0 for Windows, macOS, and Linux (deb, GTK, X11)"
-      ],
-      "startDate": "",
-      "endDate": "",
-      "url": "https://github.com/parsamajidi21/ImageUploader"
-    },
-    {
-      "name": "Porting and Developing Android 14 on Verdin iMX8MP",
-      "summary": "Adapted and optimized Android 14 for the Verdin i.MX 8M Plus module.",
-      "highlights": [
-        "Achieved 70-90% boot-time reduction by enabling and fine-tuning hibernation features",
-        "Customized the Linux kernel, optimized bootloader settings, and integrated peripheral support"
-      ],
-      "startDate": "",
-      "endDate": "",
-      "url": ""
-    },
-    {
-      "name": "Neural Network Implementation on FPGA Artix-7",
-      "summary": "Implementation of a Keras neural network using HLS4ML on an Artix-7 FPGA.",
-      "highlights": ["Integrated with a custom VHDL-based UART module for real-time serial communication"],
-      "startDate": "",
-      "endDate": "",
-      "url": "https://github.com/parsamajidi21/DNN-FPGA"
-    },
-    {
-      "name": "Programming the TurtleBot for Following a Path",
-      "summary": "Team project for a line-following robot using STM32 microcontroller.",
-      "highlights": ["Ranked 1st out of 10 teams in Embedded Real-Time Control course by optimizing PID control for fastest line-tracking"],
-      "startDate": "",
-      "endDate": "",
-      "url": ""
-    }
-  ]
+  "references": []
 }

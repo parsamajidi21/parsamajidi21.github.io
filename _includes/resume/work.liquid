@@ -31,8 +31,21 @@
         <p class="cv-summary">{{ content.summary }}</p>
       {% endif %}
       {% if content.highlights.size > 0 %}
+        {% if content.contributions.size > 0 %}
+          <p class="cv-subhead">Main responsibilities</p>
+        {% endif %}
         <ul class="items">
           {% for item in content.highlights %}
+            <li>
+              <span class="item">{{ item }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      {% if content.contributions.size > 0 %}
+        <p class="cv-subhead">Key projects and contributions</p>
+        <ul class="items">
+          {% for item in content.contributions %}
             <li>
               <span class="item">{{ item }}</span>
             </li>
