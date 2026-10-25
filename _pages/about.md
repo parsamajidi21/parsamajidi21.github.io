@@ -24,6 +24,6 @@ latest_posts:
   limit: 1 # leave blank to include all the blog posts
 ---
 
-Hey, thanks for stopping by! 👋 I’m from Iran and I recently graduated from the University of Padova, Italy, with a Master of Science in Telecommunication Engineering.
+Hey, thanks for stopping by! 👋 I’m Parsa, originally from Iran and now based in Padova, Italy, where I earned my Master of Science in Telecommunication Engineering at the University of Padova.
 
-Embedded Linux and Android BSP Engineer with 2+ years of experience in BSP development, hardware bring-up, and low-level debugging on ARM-based platforms, including NXP i.MX SoCs. Experienced in Linux kernel and device tree customization, bootloader configuration, and hardware/software integration. M.Sc. thesis focused on ML acceleration using AMD Versal AI Engines, with a strong interest in on-device ML deployment and training.
+I’m an Embedded Linux and Android BSP Engineer with 2+ years of experience in BSP development, hardware bring-up, and low-level debugging on ARM-based platforms, including NXP i.MX SoCs. I work on Linux kernel and device tree customization, bootloader configuration, and hardware/software integration. My M.Sc. thesis focused on ML acceleration using AMD Versal AI Engines, and I have a strong interest in on-device ML deployment and training.
