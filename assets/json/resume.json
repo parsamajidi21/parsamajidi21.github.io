@@ -159,6 +159,18 @@
   "references": [],
   "projects": [
     {
+      "name": "ImageUploader: USB and SD card image flasher",
+      "summary": "Cross-platform C tool to flash disk images to USB drives and SD cards and back them up. A modernized fork of USBImager by bzt.",
+      "highlights": [
+        "Redesigned the GTK interface with a header bar, drag and drop, and light/dark theme support",
+        "Fixed truncated images being reported as written successfully, plus backup, pax archive, and X11 crash bugs",
+        "Set up GitHub Actions builds for Windows and macOS and released v1.0.0 for Windows, macOS, and Linux (deb, GTK, X11)"
+      ],
+      "startDate": "",
+      "endDate": "",
+      "url": "https://github.com/parsamajidi21/ImageUploader"
+    },
+    {
       "name": "Porting and Developing Android 14 on Verdin iMX8MP",
       "summary": "Adapted and optimized Android 14 for the Verdin i.MX 8M Plus module.",
       "highlights": [
