@@ -13,7 +13,7 @@ profile:
 
 social: true # includes social icons at the bottom of the page
 
-skills: true # technical skills grid, from the skills in assets/json/resume.json
+skills: true # technical skills grid, from _data/technical_skills.yml
 
 announcements:
   enabled: true # includes a list of news items
