@@ -4,27 +4,27 @@ const ninja = document.querySelector('ninja-keys');
 // add the home and posts menu items
 ninja.data = [{
     id: "nav-about",
-    title: "about",
+    title: "About",
     section: "Navigation",
     handler: () => {
       window.location.href = "/";
     },
   },{id: "nav-blog",
-          title: "blog",
+          title: "Blog",
           description: "",
           section: "Navigation",
           handler: () => {
             window.location.href = "/blog/";
           },
         },{id: "nav-thesis",
-          title: "thesis",
+          title: "Thesis",
           description: "Master&#39;s thesis in ICT for Internet and Multimedia, University of Padua (2024/2025).",
           section: "Navigation",
           handler: () => {
             window.location.href = "/thesis/";
           },
         },{id: "nav-cv",
-          title: "cv",
+          title: "CV",
           description: "Embedded systems engineer working on Android &amp; Linux BSPs, kernel drivers, and AI acceleration.",
           section: "Navigation",
           handler: () => {
