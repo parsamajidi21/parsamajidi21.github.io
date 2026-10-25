@@ -30,7 +30,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-dynamic-layers-in-yocto",
+        },{id: "post-linux-and-freertos-on-one-chip-rpmsg-on-the-i-mx8m-mini",
+        
+          title: "Linux and FreeRTOS on One Chip: RPmsg on the i.MX8M Mini",
+        
+        description: "Running FreeRTOS on the Cortex-M4 next to Linux on the Cortex-A53 cores of a Toradex Verdin i.MX8M Mini, and making them talk over RPmsg. Yocto build, U-Boot bootaux, a custom device tree, and what each piece actually does.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/rpmsg-imx8mm/";
+          
+        },
+      },{id: "post-dynamic-layers-in-yocto",
         
           title: "Dynamic Layers in Yocto",
         
