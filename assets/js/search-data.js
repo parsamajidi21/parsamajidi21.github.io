@@ -16,6 +16,13 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/blog/";
           },
+        },{id: "nav-thesis",
+          title: "thesis",
+          description: "Master&#39;s thesis in ICT for Internet and Multimedia, University of Padua (2024/2025).",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/thesis/";
+          },
         },{id: "nav-cv",
           title: "cv",
           description: "Embedded systems engineer working on Android &amp; Linux BSPs, kernel drivers, and AI acceleration.",
