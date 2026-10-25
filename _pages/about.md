@@ -6,7 +6,7 @@ subtitle: Embedded Systems Engineer · Linux, Android &amp; AI acceleration
 
 profile:
   align: right
-  image: prof_pic.png
+  image: profile.jpg
   image_circular: false # crops the image to make it circular
   more_info: >
     <p>Padova, Italy</p>
