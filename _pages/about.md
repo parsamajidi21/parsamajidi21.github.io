@@ -1,6 +1,6 @@
 ---
 layout: about
-title: about
+title: About
 permalink: /
 subtitle: Embedded Systems Engineer · Linux, Android &amp; AI acceleration
 

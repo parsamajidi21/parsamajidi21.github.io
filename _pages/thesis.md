@@ -1,7 +1,7 @@
 ---
 layout: page
 permalink: /thesis/
-title: thesis
+title: Thesis
 description: Master's thesis in ICT for Internet and Multimedia, University of Padua (2024/2025).
 nav: true
 nav_order: 3
