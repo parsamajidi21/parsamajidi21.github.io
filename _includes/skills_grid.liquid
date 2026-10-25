@@ -1,0 +1,12 @@
+<div class="skills-grid">
+  {% for group in include.skills %}
+    <div class="skills-group">
+      <h3>{{ group.name }}</h3>
+      <ul>
+        {% for item in group.keywords %}
+          <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+</div>

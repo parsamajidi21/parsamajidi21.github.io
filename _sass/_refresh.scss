@@ -843,19 +843,49 @@ progress::-moz-progress-bar {
   }
 }
 
-.cv-skill-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  padding: 0.5rem 0 1.25rem !important;
+// Skills: a hairline grid of categories, each a plain list (CV page and about page)
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1px;
+  margin: 1rem 0 2rem;
+  border: 1px solid var(--surface-border);
+  border-radius: $radius;
+  overflow: hidden;
 }
 
-.cv-skill {
-  font-family: $font-mono;
-  font-size: 0.76rem;
-  padding: 0.2rem 0.6rem;
-  border-radius: 8px;
-  border: 1px solid var(--surface-border);
-  background: color-mix(in srgb, var(--global-text-color) 4%, transparent);
-  color: var(--global-text-color);
+.skills-grid .skills-group {
+  // the shadow fills the 1px grid gap, so an empty trailing cell stays blank
+  box-shadow: 0 0 0 1px var(--surface-border);
+  padding: 1.25rem 1.5rem;
+
+  h3 {
+    color: var(--global-theme-color);
+    font-family: inherit;
+    font-size: 0.72rem !important;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0 0 0.6rem !important;
+    padding: 0 0 0.5rem !important;
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    font-size: 0.9rem;
+    color: var(--global-text-color);
+    padding: 0.2rem 0;
+
+    &::before {
+      content: "· ";
+      color: var(--global-theme-color);
+      font-weight: 700;
+    }
+  }
 }

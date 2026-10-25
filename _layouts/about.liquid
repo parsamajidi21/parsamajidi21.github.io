@@ -40,6 +40,12 @@ layout: default
 
     <div class="clearfix">{{ content }}</div>
 
+    <!-- Skills -->
+    {% if page.skills %}
+      <h2>technical skills</h2>
+      {% include skills_grid.liquid skills=site.data.resume.skills %}
+    {% endif %}
+
     <!-- News -->
     {% if page.announcements and page.announcements.enabled %}
       <h2>
