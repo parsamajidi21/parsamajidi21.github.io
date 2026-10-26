@@ -30,7 +30,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-linux-and-freertos-on-one-chip-rpmsg-on-the-i-mx8m-mini",
+        },{id: "post-cameras-on-i-mx95-part-1-from-photons-to-dev-video",
+        
+          title: "Cameras on i.MX95, Part 1: From Photons to /dev/video",
+        
+        description: "The first post in a series on embedded cameras on the NXP i.MX95. How a MIPI CSI-2 camera like the onsemi AR2020 gets an image into memory, block by block, with interactive diagrams.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/imx95-camera-part1/";
+          
+        },
+      },{id: "post-linux-and-freertos-on-one-chip-rpmsg-on-the-i-mx8m-mini",
         
           title: "Linux and FreeRTOS on One Chip: RPmsg on the i.MX8M Mini",
         
