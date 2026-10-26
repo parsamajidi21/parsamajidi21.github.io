@@ -1,369 +1,701 @@
 // Interactive figures for the i.MX95 camera series (assets/js/camera-viz.js)
 
 .camviz {
-  margin: 1.75rem 0;
-  padding: 1rem 1.1rem 1.1rem;
+  --cv-cam: #f59e0b;
+  --cv-soc: var(--global-theme-color);
+  --cv-mem: #14b8a6;
+  --cv-sw: #ec4899;
+  --cv-ok: #10b981;
+  --cv-bad: #ef4444;
+
+  position: relative;
+  margin: 2rem 0;
+  padding: 1.25rem;
   border: 1px solid var(--surface-border);
   border-radius: $radius;
   background: var(--global-card-bg-color);
   box-shadow: var(--surface-shadow);
+  font-size: 0.9rem;
+
+  @media (max-width: 576px) {
+    padding: 1rem 0.85rem;
+  }
 
   svg {
     display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  canvas {
-    width: 100%;
-    height: auto;
-    image-rendering: pixelated;
-    border-radius: 6px;
-    border: 1px solid var(--surface-border);
-  }
-
-  button,
-  select,
-  input {
-    font: inherit;
-    font-size: 0.82rem;
-    color: var(--global-text-color);
-    background: var(--global-bg-color);
-    border: 1px solid var(--surface-border);
-    border-radius: 8px;
-    padding: 0.3rem 0.65rem;
+    overflow: visible;
   }
 
   button {
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--global-text-color);
+    background: var(--global-bg-color);
+    border: 1px solid var(--surface-border);
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
     cursor: pointer;
+    transition:
+      border-color 0.2s,
+      color 0.2s,
+      background 0.2s;
 
-    &:hover,
+    &:hover {
+      border-color: var(--global-theme-color);
+    }
+
     &.active {
       border-color: var(--global-theme-color);
-      color: var(--global-theme-color);
+      background: var(--global-theme-color);
+      color: #fff;
     }
+  }
+
+  input,
+  select {
+    font: inherit;
+    font-size: 0.88rem;
+    width: 100%;
+    color: var(--global-text-color);
+    background: var(--global-bg-color);
+    border: 1px solid var(--surface-border);
+    border-radius: 10px;
+    padding: 0.45rem 0.6rem;
   }
 }
 
-.camviz-title {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--global-theme-color);
-  margin-bottom: 0.75rem;
+.camviz-head {
+  margin-bottom: 1rem;
+
+  .camviz-kicker {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--global-theme-color);
+  }
+
+  .camviz-h {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-top: 0.15rem;
+  }
 }
 
-.camviz-toolbar {
+.camviz-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.4rem;
-  margin-bottom: 0.75rem;
-  font-size: 0.82rem;
-  color: var(--global-text-color-light);
+  margin-bottom: 1rem;
+
+  .camviz-label {
+    font-size: 0.78rem;
+    color: var(--global-text-color-light);
+    margin-right: 0.2rem;
+  }
 }
 
 .camviz-caption {
-  font-size: 0.82rem;
-  color: var(--global-text-color-light);
-  margin: 0.6rem 0 0;
-}
-
-// Pipeline diagram
-.camviz-node {
-  cursor: pointer;
-
-  rect {
-    fill: var(--global-bg-color);
-    stroke: var(--surface-border);
-    stroke-width: 1.5;
-    transition:
-      stroke 0.2s,
-      fill 0.2s;
-  }
-
-  .t {
-    fill: var(--global-text-color);
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  .s {
-    fill: var(--global-text-color-light);
-    font-size: 14px;
-  }
-
-  &.active rect {
-    stroke: var(--global-theme-color);
-    stroke-width: 2.5;
-    fill: color-mix(in srgb, var(--global-theme-color) 10%, var(--global-bg-color));
-  }
-
-  &.off {
-    opacity: 0.25;
-    pointer-events: none;
-  }
-}
-
-.camviz-link {
-  stroke: var(--global-text-color-light);
-  stroke-width: 1.5;
-  fill: none;
-  opacity: 0.6;
-}
-
-.camviz-ctl {
-  stroke: var(--accent-2);
-  stroke-width: 2;
-  stroke-dasharray: 6 5;
-  fill: none;
-  cursor: pointer;
-
-  &.active {
-    stroke-width: 3.5;
-  }
-}
-
-.camviz-ctl-label {
-  fill: var(--accent-2);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.camviz-panel {
-  margin-top: 0.75rem;
-  padding: 0.8rem 1rem;
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--global-theme-color) 6%, transparent);
-  min-height: 7.5rem;
-
-  .camviz-step-title {
-    font-weight: 600;
-    margin-bottom: 0.3rem;
-  }
-
-  .camviz-step-body {
-    font-size: 0.92rem;
-    line-height: 1.6;
-  }
-}
-
-.camviz-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.6rem;
   font-size: 0.8rem;
   color: var(--global-text-color-light);
+  margin: 0.9rem 0 0;
 }
 
-// Bayer demo
-.camviz-grid4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.75rem;
-
-  figure {
-    margin: 0;
-  }
-
-  figcaption {
-    font-size: 0.78rem;
-    line-height: 1.4;
-    color: var(--global-text-color-light);
-    margin-top: 0.35rem;
-
-    b {
-      color: var(--global-text-color);
-    }
-  }
-
-  @media (max-width: 640px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
+// domain colors
+.d-cam {
+  --d: var(--cv-cam);
 }
-
-// CSI-2 lanes
-.camviz-bytes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-  margin-bottom: 0.9rem;
+.d-soc {
+  --d: var(--cv-soc);
 }
-
-.camviz-lane {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  margin-bottom: 4px;
-  min-height: 28px;
-
-  > span:first-child {
-    flex: 0 0 4.6rem;
-    font-size: 0.75rem;
-    color: var(--global-text-color-light);
-    font-family: $font-mono;
-  }
+.d-mem {
+  --d: var(--cv-mem);
 }
-
-.camviz-byte {
-  width: 2.15rem;
-  height: 26px;
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  font-family: $font-mono;
-  font-size: 0.66rem;
-  color: #fff;
-  opacity: 0.25;
-  transition:
-    opacity 0.25s,
-    transform 0.25s;
-
-  &.hdr {
-    background: #f59e0b;
-  }
-
-  &.pay {
-    background: var(--global-theme-color);
-  }
-
-  &.ftr {
-    background: #10b981;
-  }
-
-  &.on {
-    opacity: 1;
-  }
-
-  &.pop {
-    animation: camviz-pop 0.3s ease-out;
-  }
-
-  @media (max-width: 640px) {
-    width: 1.55rem;
-    font-size: 0.55rem;
-  }
-}
-
-.camviz-clock {
-  flex: 1;
-  height: 14px;
-  border-radius: 4px;
-  background: repeating-linear-gradient(90deg, var(--accent-2) 0 6px, transparent 6px 12px);
-  opacity: 0.7;
-  animation: camviz-clock 0.6s linear infinite;
+.d-sw {
+  --d: var(--cv-sw);
 }
 
 .camviz-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.9rem;
-  font-size: 0.78rem;
+  gap: 0.4rem 1rem;
+  margin-top: 0.6rem;
+  font-size: 0.76rem;
   color: var(--global-text-color-light);
 
-  i {
+  span::before {
+    content: "";
     display: inline-block;
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 3px;
-    margin-right: 0.3rem;
-    vertical-align: -1px;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--d);
+    margin-right: 0.35rem;
   }
 }
 
-@keyframes camviz-pop {
-  from {
-    transform: translateY(-8px) scale(0.6);
+// ---------------------------------------------------------------- pipeline
+.cvp-node {
+  cursor: pointer;
+  outline: none;
+
+  .box {
+    fill: var(--global-bg-color);
+    stroke: var(--surface-border);
+    stroke-width: 1.5;
+    transition:
+      stroke 0.25s,
+      fill 0.25s;
   }
+
+  .ic {
+    fill: none;
+    stroke: var(--d);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .t {
+    fill: var(--global-text-color);
+    font-size: 13.5px;
+    font-weight: 650;
+  }
+
+  .s {
+    fill: var(--global-text-color-light);
+    font-size: 11.5px;
+  }
+
+  &:hover .box,
+  &:focus-visible .box {
+    stroke: var(--d);
+  }
+
+  &.active .box {
+    stroke: var(--d);
+    stroke-width: 2.5;
+    fill: color-mix(in srgb, var(--d) 12%, var(--global-bg-color));
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--d) 45%, transparent));
+  }
+
+  &.off {
+    opacity: 0.22;
+    pointer-events: none;
+  }
+}
+
+.cvp-link {
+  fill: none;
+  stroke: var(--global-text-color-light);
+  stroke-opacity: 0.35;
+  stroke-width: 2;
+}
+
+.cvp-flow {
+  fill: none;
+  stroke: var(--global-theme-color);
+  stroke-width: 2;
+  stroke-dasharray: 2 10;
+  stroke-linecap: round;
+  animation: cvp-flow 0.9s linear infinite;
+}
+
+.cvp-arrow {
+  fill: var(--global-text-color-light);
+  opacity: 0.7;
+}
+
+.cvp-ctl {
+  fill: none;
+  stroke: var(--cv-sw);
+  stroke-width: 2;
+  stroke-dasharray: 7 6;
+  animation: cvp-flow 1.2s linear infinite reverse;
+  cursor: pointer;
+}
+
+.cvp-pill {
+  cursor: pointer;
+
+  rect {
+    fill: var(--global-card-bg-color);
+    stroke: var(--cv-sw);
+    stroke-width: 1.5;
+  }
+
+  text {
+    fill: var(--cv-sw);
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+
+  &.active rect {
+    fill: var(--cv-sw);
+  }
+
+  &.active text {
+    fill: #fff;
+  }
+}
+
+@keyframes cvp-flow {
   to {
-    transform: none;
+    stroke-dashoffset: -24;
   }
 }
 
-@keyframes camviz-clock {
-  to {
-    background-position: 12px 0;
+.cvp-panel {
+  margin-top: 1rem;
+  padding: 1rem 1.1rem;
+  border-radius: 12px;
+  border: 1px solid var(--surface-border);
+  border-left: 4px solid var(--d);
+  background: color-mix(in srgb, var(--d) 5%, var(--global-bg-color));
+  transition: border-color 0.25s;
+
+  .cvp-tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--d);
+  }
+
+  .cvp-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0.1rem 0 0.4rem;
+  }
+
+  .cvp-body {
+    line-height: 1.65;
+    min-height: 5.5em;
+  }
+
+  .cvp-io {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+    font-size: 0.78rem;
+    color: var(--global-text-color-light);
+
+    b {
+      font-weight: 600;
+      color: var(--global-text-color);
+      background: color-mix(in srgb, var(--d) 14%, transparent);
+      border-radius: 6px;
+      padding: 0.15rem 0.5rem;
+    }
   }
 }
 
-// Bandwidth calculator
-.camviz-form {
+.cvp-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+
+  button {
+    white-space: nowrap;
+  }
+
+  .cvp-dots {
+    display: flex;
+    gap: 0.35rem;
+    flex: 1;
+    justify-content: center;
+
+    @media (max-width: 576px) {
+      flex-basis: 100%;
+      order: -1;
+      margin-bottom: 0.4rem;
+    }
+
+    button {
+      width: 0.55rem;
+      height: 0.55rem;
+      padding: 0;
+      border-radius: 50%;
+      border: 0;
+      background: color-mix(in srgb, var(--global-text-color) 18%, transparent);
+
+      &.active {
+        background: var(--global-theme-color);
+        transform: scale(1.3);
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------- bayer
+.cvb-wrap {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 0.6rem;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 1.1rem;
+  align-items: start;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cvb-stage {
+  position: relative;
+  cursor: crosshair;
+  touch-action: none;
+  border-radius: 10px;
+  overflow: hidden;
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+  }
+
+  .cvb-lens {
+    position: absolute;
+    border: 2px solid #fff;
+    border-radius: 3px;
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.6),
+      0 0 0 9999px rgba(0, 0, 0, 0.28);
+    pointer-events: none;
+    transition:
+      left 0.08s,
+      top 0.08s;
+  }
+}
+
+.cvb-step {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  margin-top: 0.7rem;
+  min-height: 3.1em;
+}
+
+.cvb-inspector {
+  .cvb-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+
+  .cvb-cell {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    border: 2px solid transparent;
+
+    b {
+      font-size: 1rem;
+      line-height: 1.1;
+    }
+
+    span {
+      font-family: $font-mono;
+      font-size: 0.7rem;
+      opacity: 0.95;
+    }
+
+    &.sel {
+      border-color: var(--global-text-color);
+    }
+  }
+
+  .cvb-read {
+    font-size: 0.82rem;
+    line-height: 1.55;
+    margin-top: 0.7rem;
+    color: var(--global-text-color-light);
+
+    b {
+      color: var(--global-text-color);
+    }
+  }
+}
+
+// ---------------------------------------------------------------- lanes
+.cvl {
+  --cell: 30px;
+  --lab: 64px;
+  position: relative;
+
+  &.tiny .cvl-byte {
+    font-size: 0;
+  }
+}
+
+.cvl-groups {
+  display: flex;
+  gap: 3px;
+  margin-left: var(--lab);
+  margin-bottom: 4px;
+
+  div {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--g);
+    border-bottom: 2px solid var(--g);
+    padding-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+
+.cvl-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 6px;
+
+  > .cvl-name {
+    flex: 0 0 calc(var(--lab) - 3px);
+    font-family: $font-mono;
+    font-size: 0.72rem;
+    color: var(--global-text-color-light);
+  }
+
+  &.packet {
+    margin-bottom: 1.1rem;
+  }
+}
+
+.cvl-cell,
+.cvl-byte {
+  width: var(--cell);
+  height: var(--cell);
+  flex: 0 0 auto;
+  border-radius: 6px;
+}
+
+.cvl-cell {
+  border: 1px dashed color-mix(in srgb, var(--global-text-color) 18%, transparent);
+}
+
+.cvl-byte {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-mono;
+  font-size: calc(var(--cell) * 0.32);
+  font-weight: 600;
+  color: #fff;
+  background: var(--g);
+  transition: opacity 0.3s;
+
+  &.sent {
+    opacity: 0.18;
+  }
+}
+
+.cvl-fly {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  transition: transform 0.5s cubic-bezier(0.3, 0.7, 0.2, 1);
+  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.5);
+}
+
+.cvl-clock {
+  flex: 1;
+  height: calc(var(--cell) * 0.7);
+  overflow: hidden;
+
+  svg {
+    width: 200%;
+    height: 100%;
+    animation: cvl-clock 1.2s linear infinite;
+  }
+
+  path {
+    fill: none;
+    stroke: var(--accent-2);
+    stroke-width: 2;
+  }
+}
+
+@keyframes cvl-clock {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.cvl-time {
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--surface-border);
+
+  .cvl-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--global-text-color-light);
+
+    > span {
+      white-space: nowrap;
+    }
+
+    > span:first-child {
+      flex: 0 0 4rem;
+    }
+
+    > div {
+      height: 12px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--global-text-color) 14%, transparent);
+      transition: background 0.3s;
+    }
+
+    &.on {
+      color: var(--global-text-color);
+      font-weight: 600;
+
+      > div {
+        background: var(--global-theme-color);
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------- bandwidth
+.cvw-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   margin-bottom: 1rem;
+}
+
+.cvw-form {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 1.2rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
   label {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
-    font-size: 0.75rem;
+    gap: 0.25rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--global-text-color-light);
+  }
+}
+
+.cvw-gauges {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cvw-gauge {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  border-radius: 12px;
+  border: 1px solid var(--surface-border);
+  background: var(--global-bg-color);
+
+  svg {
+    flex: 0 0 68px;
+    width: 68px;
+    height: 68px;
+  }
+
+  .trk {
+    fill: none;
+    stroke: color-mix(in srgb, var(--global-text-color) 12%, transparent);
+    stroke-width: 8;
+  }
+
+  .val {
+    fill: none;
+    stroke: var(--cv-ok);
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition:
+      stroke-dashoffset 0.5s,
+      stroke 0.3s;
+  }
+
+  .pct {
+    fill: var(--global-text-color);
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  &.over .val {
+    stroke: var(--cv-bad);
+  }
+
+  .cvw-name {
+    font-size: 0.72rem;
     color: var(--global-text-color-light);
   }
 
-  input,
-  select {
-    width: 100%;
+  .cvw-num {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .cvw-lim {
+    font-size: 0.72rem;
+    color: var(--global-text-color-light);
   }
 }
 
-.camviz-meter {
-  margin-bottom: 0.8rem;
-
-  .camviz-meter-head {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    font-size: 0.85rem;
-    margin-bottom: 0.25rem;
-
-    span:last-child {
-      font-family: $font-mono;
-      font-size: 0.8rem;
-    }
-  }
-
-  .camviz-bar {
-    height: 10px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--global-text-color) 8%, transparent);
-    overflow: hidden;
-
-    div {
-      height: 100%;
-      border-radius: 999px;
-      background: #10b981;
-      transition:
-        width 0.35s,
-        background 0.35s;
-    }
-
-    &.over div {
-      background: #ef4444;
-    }
-  }
-}
-
-.camviz-verdict {
-  font-size: 0.9rem;
-  font-weight: 600;
+.cvw-verdict {
+  margin-top: 0.9rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  line-height: 1.5;
 
   &.ok {
-    color: #10b981;
+    background: color-mix(in srgb, var(--cv-ok) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cv-ok) 40%, transparent);
   }
 
   &.bad {
-    color: #ef4444;
+    background: color-mix(in srgb, var(--cv-bad) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cv-bad) 40%, transparent);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .camviz-clock,
-  .camviz-byte.pop {
+  .cvp-flow,
+  .cvp-ctl,
+  .cvl-clock svg {
     animation: none;
+  }
+
+  .cvl-fly {
+    transition: none;
   }
 }
