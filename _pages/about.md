@@ -23,7 +23,7 @@ announcements:
 latest_posts:
   enabled: true
   scrollable: true # adds a vertical scroll bar if there are more than 3 new posts items
-  limit: 1 # leave blank to include all the blog posts
+  limit: 3 # leave blank to include all the blog posts
 ---
 
 Hey, thanks for stopping by! 👋 I’m Parsa, originally from Iran and now based in Padova, Italy, where I earned my Master of Science in Telecommunication Engineering at the University of Padova.
