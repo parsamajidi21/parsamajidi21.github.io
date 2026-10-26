@@ -1,0 +1,369 @@
+// Interactive figures for the i.MX95 camera series (assets/js/camera-viz.js)
+
+.camviz {
+  margin: 1.75rem 0;
+  padding: 1rem 1.1rem 1.1rem;
+  border: 1px solid var(--surface-border);
+  border-radius: $radius;
+  background: var(--global-card-bg-color);
+  box-shadow: var(--surface-shadow);
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  canvas {
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+    border-radius: 6px;
+    border: 1px solid var(--surface-border);
+  }
+
+  button,
+  select,
+  input {
+    font: inherit;
+    font-size: 0.82rem;
+    color: var(--global-text-color);
+    background: var(--global-bg-color);
+    border: 1px solid var(--surface-border);
+    border-radius: 8px;
+    padding: 0.3rem 0.65rem;
+  }
+
+  button {
+    cursor: pointer;
+
+    &:hover,
+    &.active {
+      border-color: var(--global-theme-color);
+      color: var(--global-theme-color);
+    }
+  }
+}
+
+.camviz-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--global-theme-color);
+  margin-bottom: 0.75rem;
+}
+
+.camviz-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--global-text-color-light);
+}
+
+.camviz-caption {
+  font-size: 0.82rem;
+  color: var(--global-text-color-light);
+  margin: 0.6rem 0 0;
+}
+
+// Pipeline diagram
+.camviz-node {
+  cursor: pointer;
+
+  rect {
+    fill: var(--global-bg-color);
+    stroke: var(--surface-border);
+    stroke-width: 1.5;
+    transition:
+      stroke 0.2s,
+      fill 0.2s;
+  }
+
+  .t {
+    fill: var(--global-text-color);
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .s {
+    fill: var(--global-text-color-light);
+    font-size: 14px;
+  }
+
+  &.active rect {
+    stroke: var(--global-theme-color);
+    stroke-width: 2.5;
+    fill: color-mix(in srgb, var(--global-theme-color) 10%, var(--global-bg-color));
+  }
+
+  &.off {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+}
+
+.camviz-link {
+  stroke: var(--global-text-color-light);
+  stroke-width: 1.5;
+  fill: none;
+  opacity: 0.6;
+}
+
+.camviz-ctl {
+  stroke: var(--accent-2);
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+  fill: none;
+  cursor: pointer;
+
+  &.active {
+    stroke-width: 3.5;
+  }
+}
+
+.camviz-ctl-label {
+  fill: var(--accent-2);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.camviz-panel {
+  margin-top: 0.75rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--global-theme-color) 6%, transparent);
+  min-height: 7.5rem;
+
+  .camviz-step-title {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .camviz-step-body {
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+}
+
+.camviz-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--global-text-color-light);
+}
+
+// Bayer demo
+.camviz-grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+
+  figure {
+    margin: 0;
+  }
+
+  figcaption {
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: var(--global-text-color-light);
+    margin-top: 0.35rem;
+
+    b {
+      color: var(--global-text-color);
+    }
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// CSI-2 lanes
+.camviz-bytes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: 0.9rem;
+}
+
+.camviz-lane {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 4px;
+  min-height: 28px;
+
+  > span:first-child {
+    flex: 0 0 4.6rem;
+    font-size: 0.75rem;
+    color: var(--global-text-color-light);
+    font-family: $font-mono;
+  }
+}
+
+.camviz-byte {
+  width: 2.15rem;
+  height: 26px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  font-family: $font-mono;
+  font-size: 0.66rem;
+  color: #fff;
+  opacity: 0.25;
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
+
+  &.hdr {
+    background: #f59e0b;
+  }
+
+  &.pay {
+    background: var(--global-theme-color);
+  }
+
+  &.ftr {
+    background: #10b981;
+  }
+
+  &.on {
+    opacity: 1;
+  }
+
+  &.pop {
+    animation: camviz-pop 0.3s ease-out;
+  }
+
+  @media (max-width: 640px) {
+    width: 1.55rem;
+    font-size: 0.55rem;
+  }
+}
+
+.camviz-clock {
+  flex: 1;
+  height: 14px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(90deg, var(--accent-2) 0 6px, transparent 6px 12px);
+  opacity: 0.7;
+  animation: camviz-clock 0.6s linear infinite;
+}
+
+.camviz-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  font-size: 0.78rem;
+  color: var(--global-text-color-light);
+
+  i {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 3px;
+    margin-right: 0.3rem;
+    vertical-align: -1px;
+  }
+}
+
+@keyframes camviz-pop {
+  from {
+    transform: translateY(-8px) scale(0.6);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes camviz-clock {
+  to {
+    background-position: 12px 0;
+  }
+}
+
+// Bandwidth calculator
+.camviz-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.75rem;
+    color: var(--global-text-color-light);
+  }
+
+  input,
+  select {
+    width: 100%;
+  }
+}
+
+.camviz-meter {
+  margin-bottom: 0.8rem;
+
+  .camviz-meter-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+
+    span:last-child {
+      font-family: $font-mono;
+      font-size: 0.8rem;
+    }
+  }
+
+  .camviz-bar {
+    height: 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--global-text-color) 8%, transparent);
+    overflow: hidden;
+
+    div {
+      height: 100%;
+      border-radius: 999px;
+      background: #10b981;
+      transition:
+        width 0.35s,
+        background 0.35s;
+    }
+
+    &.over div {
+      background: #ef4444;
+    }
+  }
+}
+
+.camviz-verdict {
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  &.ok {
+    color: #10b981;
+  }
+
+  &.bad {
+    color: #ef4444;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .camviz-clock,
+  .camviz-byte.pop {
+    animation: none;
+  }
+}
