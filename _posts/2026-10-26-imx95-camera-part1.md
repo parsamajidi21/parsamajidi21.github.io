@@ -164,7 +164,7 @@ Now that the path from sensor to memory is clear, Part 2 goes to the first box i
 - [TechNexion TEVS-AR2020 camera module](https://www.technexion.com/product/tevs-ar2020/)
 - [Linux kernel: Video4Linux (V4L2) driver API](https://docs.kernel.org/driver-api/media/index.html)
 - [Linux kernel: Pixel data transmitter and receiver drivers (CSI-2)](https://docs.kernel.org/driver-api/media/tx-rx.html)
-- [libcamera documentation](https://libcamera.org/docs.html)
+- [libcamera documentation](https://docs.libcamera.org/master/)
 - [RidgeRun: NXP i.MX95 capture subsystem](https://developer.ridgerun.com/wiki/index.php/NXP_i.MX95_Technical_Guide/Capture_Subsystem)
 
 <script src="{{ '/assets/js/camera-viz.js' | relative_url | bust_file_cache }}" defer></script>
