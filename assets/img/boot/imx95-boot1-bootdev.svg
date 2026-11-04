@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg class="bv-svg bv-standalone" xmlns="http://www.w3.org/2000/svg" viewBox="-8 -8 816 778" role="img" aria-label="Flowchart of how the i.MX95 BootROM picks a boot device and falls back to USB serial download" width="816" height="778"><title>How the BootROM picks a boot device</title><style>.bv-svg{--bv-m33:#e8590c;--bv-a55:#1971c2;--bv-m7:#7048e8;--bv-ele:#c2255c;--bv-rom:#868e96;--bv-sram:#0c8599;--bv-ddr:#b88a00;--bv-flash:#5c940d;--bv-ok:#10b981;--bv-bad:#ef4444;--bv-on-c:#ffffff;--bv-fg:var(--global-text-color,#1f2328);--bv-fg2:var(--global-text-color-light,#5f6b7a);--bv-bg:var(--global-bg-color,#ffffff);--bv-line:var(--surface-border,#d0d7de);--bv-acc:var(--global-theme-color,#1971c2);display:block;width:100%;height:auto;overflow:visible;font-size:12px}
+html[data-theme="dark"] .bv-svg{--bv-m33:#ff8a4c;--bv-a55:#4dabf7;--bv-m7:#9775fa;--bv-ele:#f06595;--bv-rom:#adb5bd;--bv-sram:#3bc9db;--bv-ddr:#fcc419;--bv-flash:#94d82d;--bv-ok:#34d399;--bv-bad:#f87171;--bv-on-c:#10131a;}
+.bv-svg text{fill:var(--bv-fg)}
+.bv-svg .board{fill:none;stroke:var(--bv-line);stroke-width:1.5;stroke-dasharray:6 5}
+.bv-svg .tl-box{fill:none;stroke:var(--bv-line);stroke-width:1.2}
+.bv-svg .lbl{fill:var(--bv-fg2);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;font-weight:650}
+.bv-svg .note{fill:var(--bv-fg2);font-size:10.5px}
+.bv-svg .note tspan.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.bv-soc .soc-box{fill:color-mix(in srgb,var(--bv-fg) 3%,var(--bv-bg));stroke:var(--bv-line);stroke-width:1.5;transition:stroke .5s}
+.bv-soc[data-s~=pw] .soc-box{stroke:var(--bv-fg2)}
+.bv-blk .box{fill:var(--bv-bg);stroke:var(--bv-line);stroke-width:1.4;transition:fill .45s,stroke .45s,stroke-width .45s}
+.bv-blk .t{font-size:12.5px;font-weight:650;text-anchor:middle;fill:var(--bv-fg2);transition:fill .45s}
+.bv-blk .s{font-size:10.5px;text-anchor:middle;fill:var(--bv-fg2)}
+.bv-blk .s.v1,.bv-blk .s.v2{display:none;fill:var(--c);font-weight:650}
+.bv-blk[data-s~=v1] .s.v0,.bv-blk[data-s~=v2] .s.v0,.bv-blk[data-s~=v2] .s.v1{display:none}
+.bv-blk[data-s~=v1] .s.v1,.bv-blk[data-s~=v2] .s.v2{display:inline}
+.bv-blk[data-s~=pw] .box{stroke:color-mix(in srgb,var(--c) 55%,var(--bv-line))}
+.bv-blk[data-s~=pw] .t,.bv-blk[data-s~=on] .t{fill:var(--bv-fg)}
+.bv-blk[data-s~=on] .box{fill:color-mix(in srgb,var(--c) 14%,var(--bv-bg));stroke:var(--c);stroke-width:2.2}
+.bv-blk.k-core[data-s~=on] .box{fill:color-mix(in srgb,var(--c) 24%,var(--bv-bg))}
+.bv-blk[data-s~=dim]{opacity:.4}
+.bv-blk[data-s~=glow] .box{animation:bv-glow 1.8s ease-in-out infinite}
+@keyframes bv-glow{0%,100%{filter:drop-shadow(0 0 7px color-mix(in srgb,var(--c) 75%,transparent))}50%{filter:drop-shadow(0 0 2px color-mix(in srgb,var(--c) 40%,transparent))}}
+.bv-blk .hatch{opacity:0;pointer-events:none;transition:opacity .45s}
+.bv-blk.k-rom .hatch{opacity:.3}
+.bv-blk[data-s~=lock] .hatch{opacity:.5}
+.bv-hl{stroke:var(--bv-fg2);stroke-width:1.1}
+.bv-blk .lock{opacity:0;transition:opacity .45s}
+.bv-blk[data-s~=lock] .lock{opacity:1}
+.bv-blk[data-s~=pulse] .lock{animation:bv-blink .7s ease-in-out 4}
+@keyframes bv-blink{50%{opacity:.15}}
+.bv-blk .lock path{fill:none;stroke:var(--bv-fg);stroke-width:1.6}
+.bv-blk .lock rect{fill:var(--bv-bg);stroke:var(--bv-fg);stroke-width:1.6}
+.bv-blk .mini{fill:none;stroke:var(--c);stroke-opacity:.3;stroke-width:1.2;transition:stroke-opacity .45s}
+.bv-blk[data-s~=pw] .mini,.bv-blk[data-s~=on] .mini{stroke-opacity:.75}
+.bv-blk .sine{fill:none;stroke:var(--bv-line);stroke-width:1.6;transition:stroke .45s}
+.bv-blk[data-s~=on] .sine{stroke:var(--c);stroke-dasharray:6 3;animation:bv-dash .6s linear infinite}
+.bv-blk .slot{fill:var(--bv-bg);stroke:var(--bv-fg2);stroke-width:1.1}
+.bv-blk .knob{fill:var(--bv-fg2);transition:fill .45s}
+.bv-blk[data-s~=on] .knob{fill:var(--c)}
+.bv-blk.k-chip .t{font-size:10.5px}
+.bv-blk.k-chip .box{stroke-dasharray:3 3}
+.bv-blk.k-chip[data-s~=on] .box{stroke-dasharray:none;stroke-width:1.6}
+.bv-wire{--c:var(--bv-fg);fill:none;stroke:var(--bv-line);stroke-width:1.6;stroke-dasharray:4 4;transition:stroke .45s,stroke-width .45s}
+.bv-wire[data-s~=on]{stroke:var(--c);stroke-dasharray:none;stroke-width:2.2}
+.bv-wire[data-s~=ok]{stroke:var(--bv-ok);stroke-dasharray:none;stroke-width:2.4}
+.bv-wire[data-s~=bad]{stroke:var(--bv-bad);stroke-dasharray:6 4;stroke-width:2.4}
+.bv-wl{font-size:9.5px;font-weight:650;fill:var(--bv-fg2)}
+.bv-flow{fill:none;stroke:var(--c);stroke-width:2.2;stroke-dasharray:3 7;stroke-linecap:round;opacity:0;transition:opacity .45s}
+.bv-flow[data-s~=on]{opacity:1;animation:bv-dash .8s linear infinite}
+@keyframes bv-dash{to{stroke-dashoffset:-20}}
+.bv-tag{opacity:0;transition:opacity .45s}
+.bv-tag[data-s~=on]{opacity:1}
+.bv-tag text{font-size:10.5px;fill:var(--bv-fg2)}
+.bv-tag text.em{fill:var(--c);font-weight:650}
+.bv-seg{stroke:var(--bv-line);stroke-width:1}
+.bv-seg.meta{fill:color-mix(in srgb,var(--bv-fg) 9%,var(--bv-bg))}
+.bv-seg.boot{fill:color-mix(in srgb,var(--bv-flash) 40%,var(--bv-bg));stroke:var(--bv-flash);stroke-width:1.4}
+.bv-seg.part{fill:color-mix(in srgb,var(--bv-flash) 12%,var(--bv-bg))}
+.bv-seg.free{fill:none;stroke-dasharray:3 3}
+.bv-segt{font-size:10.5px;text-anchor:middle}
+.bv-strip{opacity:.35;transition:opacity .45s}
+.bv-strip[data-s~=on]{opacity:1}
+.bv-tr .base{fill:none;stroke:var(--bv-line);stroke-width:1.1;stroke-dasharray:3 3}
+.bv-tr .ramp{fill:none;stroke:var(--c);stroke-width:2;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.2s ease-in-out}
+.bv-tr[data-s~=on] .ramp{stroke-dashoffset:0}
+.bv-tr .tl{font-size:10px;fill:var(--bv-fg2);transition:fill .45s}
+.bv-tr[data-s~=on] .tl{fill:var(--bv-fg)}
+.bv-tr .mark{stroke:var(--c);stroke-width:1;stroke-dasharray:2 3;opacity:0;transition:opacity .45s .9s}
+.bv-tr .mt{font-size:10px;fill:var(--c);font-weight:650;opacity:0;transition:opacity .45s .9s}
+.bv-tr[data-s~=on] .mark,.bv-tr[data-s~=on] .mt{opacity:1}
+.bv-mv{opacity:0;transition:opacity .3s}
+.bv-mv[data-s~=show]{opacity:1}
+.bv-mv rect{fill:var(--c);filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.bv-mv text{fill:var(--bv-on-c);font-size:10px;font-weight:700;text-anchor:middle}
+.bv-badge{opacity:0;transform:scale(.3);transform-box:fill-box;transform-origin:center;transition:opacity .3s,transform .45s cubic-bezier(.3,1.6,.5,1)}
+.bv-badge[data-s~=on]{opacity:1;transform:scale(1)}
+.bv-badge circle{fill:var(--c);stroke:var(--bv-bg);stroke-width:2}
+.bv-badge path{fill:none;stroke:var(--bv-on-c);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.bv-term .box{fill:#1f2328;stroke:var(--bv-line)}
+.bv-term text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;fill:#e6edf3}
+.bv-term text.p{fill:#7ee787}
+.bv-term{opacity:.3;transition:opacity .45s}
+.bv-term[data-s~=on]{opacity:1}
+.bv-pin circle{fill:var(--bv-acc);stroke:var(--bv-bg);stroke-width:2}
+.bv-pin text{fill:#fff;font-size:10.5px;font-weight:700;text-anchor:middle}
+.bv-caps text{font-size:11.5px;fill:var(--bv-fg)}
+.bv-caps text.n{font-weight:700;fill:var(--bv-acc)}
+.c-m33{--c:var(--bv-m33)}.c-a55{--c:var(--bv-a55)}.c-m7{--c:var(--bv-m7)}.c-ele{--c:var(--bv-ele)}
+.c-rom{--c:var(--bv-rom)}.c-sram{--c:var(--bv-sram)}.c-ddr{--c:var(--bv-ddr)}.c-flash{--c:var(--bv-flash)}
+.c-ok{--c:var(--bv-ok)}.c-bad{--c:var(--bv-bad)}.c-pwr{--c:var(--bv-fg)}.c-acc{--c:var(--bv-acc)}
+.bv-instant *,.bv-instant{transition:none!important}
+.bv-svg.bv-standalone{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+@media (prefers-color-scheme:dark){.bv-svg.bv-standalone{--bv-m33:#ff8a4c;--bv-a55:#4dabf7;--bv-m7:#9775fa;--bv-ele:#f06595;--bv-rom:#adb5bd;--bv-sram:#3bc9db;--bv-ddr:#fcc419;--bv-flash:#94d82d;--bv-ok:#34d399;--bv-bad:#f87171;--bv-on-c:#10131a;--bv-fg:#e6edf3;--bv-fg2:#9ba7b4;--bv-bg:#16181d;--bv-line:#3a414b;--bv-acc:#4dabf7}}
+.bv-standalone *{animation:none!important;transition:none!important}
+.bv-standalone .bv-bgrect{fill:var(--bv-bg)}</style><rect class="bv-bgrect" x="-8" y="-8" width="816" height="778" rx="14"/><defs><pattern id="s-bootdev-h" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line class="bv-hl" x1="0" y1="0" x2="0" y2="7"/></pattern><marker id="s-bootdev-a" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/></marker></defs><path class="bv-wire c-acc" data-id="eIn" d="M150,61 H174" marker-end="url(#s-bootdev-a)" data-s="on"/><path class="bv-wire c-acc" data-id="eCtl" d="M275,61 H289" marker-end="url(#s-bootdev-a)" data-s="on"/><path class="bv-wire c-acc" data-id="eRd" d="M415,61 H434" marker-end="url(#s-bootdev-a)" data-s="on"/><path class="bv-wire c-acc" data-id="eOk" d="M560,61 H572" marker-end="url(#s-bootdev-a)" data-s="on"/><path class="bv-wire c-acc" data-id="eGo" d="M663,61 H674" marker-end="url(#s-bootdev-a)" data-s="ok"/><path class="bv-wire c-acc" data-id="eNo" d="M618,93 V134" marker-end="url(#s-bootdev-a)" data-s="bad"/><text class="bv-wl" x="626" y="118">no</text><path class="bv-wire c-acc" data-id="eFail" d="M618,187 V212 H425 V234" marker-end="url(#s-bootdev-a)" data-s="bad"/><text class="bv-wl" x="520" y="206" text-anchor="middle">nothing valid</text><path class="bv-wire c-acc" data-id="eSer" d="M225,93 V265 H289" marker-end="url(#s-bootdev-a)" data-s="on"/><text class="bv-wl" x="233" y="160">serial</text><text class="bv-wl" x="233" y="172">download</text><path class="bv-wire c-acc" data-id="eHost" d="M560,265 H574" marker-end="url(#s-bootdev-a)" data-s="on"/><g class="bv-blk c-acc" data-id="nIn" data-s="on"><rect class="box" x="20" y="35" width="130" height="52" rx="3"/><text class="t" x="85" y="59">BOOT_MODE</text><text class="s v0" x="85" y="73">+ boot fuses</text></g><g class="bv-blk c-acc" data-id="dMode" data-s="on"><polygon class="box" points="225,29 275,61 225,93 175,61"/><text class="t" x="225" y="65.5">mode?</text></g><g class="bv-blk c-flash" data-id="nCtl" data-s="on"><rect class="box" x="290" y="35" width="125" height="52" rx="3"/><text class="t" x="352.5" y="59">uSDHC / FlexSPI</text><text class="s v0" x="352.5" y="73">boot device</text></g><g class="bv-blk c-sram" data-id="nRead" data-s="on"><rect class="box" x="435" y="35" width="125" height="52" rx="3"/><text class="t" x="497.5" y="59">read header</text><text class="s v0" x="497.5" y="73">→ OCRAM</text></g><g class="bv-blk c-acc" data-id="dOk" data-s="on"><polygon class="box" points="618,29 663,61 618,93 573,61"/><text class="t" x="618" y="59">valid?</text><text class="s v0" x="618" y="73">tag 0x87</text></g><g class="bv-blk c-ok" data-id="nGo" data-s="on"><rect class="box" x="675" y="35" width="110" height="52" rx="3"/><text class="t" x="730" y="59">continue</text><text class="s v0" x="730" y="73">→ ELE FW, part 2</text></g><g class="bv-blk c-bad" data-id="nSec" data-s="on"><rect class="box" x="559" y="135" width="118" height="52" rx="3"/><text class="t" x="618" y="159">secondary</text><text class="s v0" x="618" y="173">image set</text></g><g class="bv-blk c-acc" data-id="nUsb" data-s="on"><rect class="box" x="290" y="235" width="270" height="60" rx="3"/><text class="t" x="425" y="263">Serial download (USB)</text><text class="s v0" x="425" y="277">the ROM waits for a host</text></g><g class="bv-badge c-ok" data-id="ok" data-s="on"><circle cx="650" cy="36" r="9.5"/><path d="M645.8,36 l3,3 l5.6,-6"/></g><g class="bv-badge c-bad" data-id="bad"><circle cx="650" cy="36" r="9.5"/><path d="M646.5,32.5 l7,7 M653.5,32.5 l-7,7"/></g><g class="bv-term" data-id="term" data-s="on"><rect class="box" x="575" y="228" width="210" height="80" rx="8"/><text x="586" y="248"><tspan class="p">$</tspan> lsusb | grep -i nxp</text><text x="586" y="263">… ID 1fc9:… NXP Semiconductors</text><text x="586" y="283"><tspan class="p">$</tspan> uuu flash.bin</text><text x="586" y="298">SDPS: boot -f flash.bin</text></g><text class="lbl" x="20" y="352">Where the ROM reads first</text><text class="note" x="20" y="382" style="font-weight:650;fill:var(--bv-fg)">SD card</text><rect class="bv-seg meta" x="120" y="366" width="52.10526315789474" height="24" rx="2"/><text class="bv-segt" x="146.05263157894737" y="381.8" style="font-size:9.5px">MBR / GPT</text><rect class="bv-seg free" x="172.10526315789474" y="366" width="147.63157894736844" height="24" rx="2"/><rect class="bv-seg boot" x="319.7368421052632" y="366" width="173.6842105263158" height="24" rx="2"/><text class="bv-segt" x="406.5789473684211" y="381.8" style="font-size:9.5px">flash.bin</text><rect class="bv-seg free" x="493.42105263157896" y="366" width="52.10526315789474" height="24" rx="2"/><text class="bv-segt" x="519.4736842105264" y="381.8" style="font-size:9.5px">…</text><rect class="bv-seg part" x="545.5263157894738" y="366" width="234.47368421052633" height="24" rx="2"/><text class="bv-segt" x="662.7631578947369" y="381.8" style="font-size:9.5px">partitions: boot, rootfs</text><text class="note" x="20" y="416" style="font-weight:650;fill:var(--bv-fg)">eMMC</text><rect class="bv-seg boot" x="120" y="400" width="260.5263157894737" height="24" rx="2"/><text class="bv-segt" x="250.26315789473685" y="415.8" style="font-size:9.5px">boot0: flash.bin</text><rect class="bv-seg meta" x="389.2105263157895" y="400" width="78.15789473684211" height="24" rx="2"/><text class="bv-segt" x="428.2894736842105" y="415.8" style="font-size:9.5px">boot1</text><rect class="bv-seg part" x="476.0526315789474" y="400" width="303.94736842105266" height="24" rx="2"/><text class="bv-segt" x="628.0263157894738" y="415.8" style="font-size:9.5px">user area: partitions (boot, rootfs)</text><text class="note" x="20" y="450" style="font-weight:650;fill:var(--bv-fg)">FlexSPI NOR</text><rect class="bv-seg meta" x="120" y="434" width="130.26315789473685" height="24" rx="2"/><text class="bv-segt" x="185.13157894736844" y="449.8" style="font-size:9.5px">FCB</text><rect class="bv-seg boot" x="250.26315789473685" y="434" width="217.10526315789474" height="24" rx="2"/><text class="bv-segt" x="358.8157894736842" y="449.8" style="font-size:9.5px">flash.bin</text><rect class="bv-seg free" x="467.3684210526316" y="434" width="312.63157894736844" height="24" rx="2"/><text class="bv-segt" x="623.6842105263158" y="449.8" style="font-size:9.5px">rest of the flash</text><text class="note" x="20" y="490">SD: flash.bin at 32 KiB · eMMC: boot0 hardware partition, offset 0 · FlexSPI: FCB first, then the container</text><text class="note" x="20" y="508">USB serial download reads no boot media: the host sends flash.bin with uuu.</text><g class="bv-caps"><text class="n" x="12" y="542">1.</text><text x="34" y="542">The ROM has two inputs: the BOOT_MODE pins, latched at reset, and the boot fuses. In "boot from fuses" mode the fuses</text><text x="34" y="558">alone decide.</text><text class="n" x="12" y="578">2.</text><text x="34" y="578">The pins select SD boot.</text><text class="n" x="12" y="598">3.</text><text x="34" y="598">The ROM brings up uSDHC and the card: identification at ≤ 400 kHz first, then a faster bus mode.</text><text class="n" x="12" y="618">4.</text><text x="34" y="618">It copies the first container header from offset 32 KiB into OCRAM. The space before 32 KiB is left for the partition</text><text x="34" y="634">table.</text><text class="n" x="12" y="654">5.</text><text x="34" y="654">The ROM checks the header: tag 0x87, version and length. If it is valid, the boot continues with the ELE firmware.</text><text x="34" y="670">That is where part 2 starts.</text><text class="n" x="12" y="690">6.</text><text x="34" y="690">What if the header is missing, for example on a blank card, or with flash.bin written at the wrong offset? The ROM</text><text x="34" y="706">tries the secondary image set, if one is configured.</text><text class="n" x="12" y="726">7.</text><text x="34" y="726">If no valid image is found anywhere, the ROM falls back to serial download: the board enumerates over USB and waits</text><text x="34" y="742">for uuu. The board looks dead, but the ROM is running.</text></g></svg>
