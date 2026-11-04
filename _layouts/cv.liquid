@@ -86,9 +86,28 @@ layout: default
             {% endunless %}
           {% endif %}
           {% if data[0] == 'meta' or data[1].size == 0 %} {% continue %} {% endif %}
+          {% if data[0] == 'work' %}
+            <a class="anchor" id="journey"></a>
+            <div class="card mt-3 p-3">
+              <h3 class="card-title font-weight-medium">Experience &amp; Education</h3>
+              <script type="application/json" id="life-resume">
+                {"work": {{ site.data.resume.work | jsonify }}, "education": {{ site.data.resume.education | jsonify }}}
+              </script>
+              <div class="lifeviz"></div>
+            </div>
+          {% endif %}
+          {% assign lv_fallback = false %}
+          {% if data[0] == 'work' or data[0] == 'education' %}
+            {% assign lv_fallback = true %}
+          {% endif %}
           <a class="anchor" id="{{ data[0] }}"></a>
-          <div class="card mt-3 p-3">
-            <h3 class="card-title font-weight-medium">
+          <div class="card mt-3 p-3{% if lv_fallback %} lv-fallback{% endif %}">
+            <h3
+              class="card-title font-weight-medium"
+              {% if lv_fallback %}
+                data-toc-skip
+              {% endif %}
+            >
               {%- if data[0] == 'projects' -%}
                 Open Source &amp; Community
               {%- elsif data[0] == 'work' -%}
@@ -132,4 +151,5 @@ layout: default
       </div>
     </article>
   </div>
+  <script src="{{ '/assets/js/life-viz.js' | relative_url | bust_file_cache }}" defer></script>
 {% endunless %}
