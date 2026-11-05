@@ -7,7 +7,6 @@ tags: linux boot
 categories: boot
 giscus_comments: true
 related_posts: false
-published: false
 pretty_table: true
 toc:
   sidebar: left
