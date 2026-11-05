@@ -379,8 +379,8 @@
     // SoC rails, POR_B, boot pins, clock
     [
       ["rs1", 122, "SOC"],
-      ["rs2", 140, "1V8"],
-      ["rs3", 158, "ARM"],
+      ["rs2", 140, "ARM"],
+      ["rs3", 158, "1V8"],
     ].forEach(function (r) {
       s += wire(r[0], "M170," + r[1] + " H230", "c-pwr");
       s += wl(200, r[1] - 3, r[2], "middle");
@@ -458,10 +458,10 @@
 
     // timeline
     s += '<rect class="tl-box" x="8" y="444" width="784" height="150" rx="12"/>';
-    s += '<text class="lbl" x="22" y="464">Power-up timeline · illustrative order, not to scale</text>';
+    s += '<text class="lbl" x="22" y="464">Power-up timeline · order simplified from the i.MX 95 datasheet, not to scale</text>';
     s += trace("tSoc", "VDD_SOC", 488, 0.06, "c-pwr");
-    s += trace("t1v8", "NVCC 1.8 V (I/O)", 503, 0.16, "c-pwr");
-    s += trace("tArm", "VDD_ARM", 518, 0.26, "c-pwr");
+    s += trace("tArm", "VDD_ARM", 503, 0.16, "c-pwr");
+    s += trace("t1v8", "1.8 V supplies", 518, 0.26, "c-pwr");
     s += trace("tV1", "LPDDR5 VDD1 1.8 V", 533, 0.38, "c-ddr");
     s += trace("tV2", "LPDDR5 VDD2H 1.05 V", 548, 0.48, "c-ddr");
     s += trace("tVq", "LPDDR5 VDDQ 0.5 V", 563, 0.58, "c-ddr");
@@ -479,14 +479,14 @@
         pin: [30, 102],
       },
       {
-        cap: "The PMIC brings up the SoC rails one after another, in the order set by its OTP. Each rail has to be in regulation before the next one starts.",
+        cap: "The PMIC brings up the SoC rails in the order its OTP sets. The datasheet sequence: NVCC_BBSM_1P8 first, then VDD_SOC, VDD_ARM (with or after VDD_SOC), the 0.8 V analog and PHY supplies, and the 1.8 V supplies. Some steps may overlap.",
         s: { rs1: "on", rs2: "on", rs3: "on", tSoc: "on", t1v8: "on", tArm: "on", soc: "pw" },
-        delay: { rs2: 0.4, t1v8: 0.4, rs3: 0.8, tArm: 0.8 },
+        delay: { rs2: 0.4, tArm: 0.4, rs3: 0.8, t1v8: 0.8 },
         pin: [214, 104],
         dur: 4400,
       },
       {
-        cap: "Then the LPDDR5 rails: VDD1, VDD2H, VDDQ. The DRAM has power from now on, but nothing can use it until it has been trained, several stages later (part 3).",
+        cap: "Then the DRAM rails, with VDDQ after VDD2H. The SoC has no VDD2H/VDDQ ordering requirement of its own; the DRAM part does. The DRAM has power from now on, but nothing can use it until it has been trained (part 3).",
         s: { rd1: "on", rd2: "on", rd3: "on", tV1: "on", tV2: "on", tVq: "on", lpddr: "pw lock v1" },
         delay: { rd2: 0.4, tV2: 0.4, rd3: 0.8, tVq: 0.8 },
         pin: [628, 63],
@@ -498,13 +498,13 @@
         pin: [173, 364],
       },
       {
-        cap: "With every rail in regulation, the PMIC releases POR_B. The SoC leaves reset, and the boot-mode pins are latched on this edge.",
+        cap: "With every rail in regulation, the PMIC releases POR_B, the last step of the datasheet sequence. The SoC leaves reset; the hardware samples the BOOT_MODE pins before the ROM starts and holds the value in a register.",
         s: { wPor: "on", tPor: "on" },
         pin: [184, 212],
         dur: 4200,
       },
       {
-        cap: "The BootROM starts executing on the Cortex-M33, not on the A55. The ELE comes out of reset running its own ROM. The A55 cluster and the M7 stay in reset.",
+        cap: "The BootROM starts executing on the Cortex-M33, not on the A55: the datasheet calls this Low Power Boot, with only the M33 running after POR. The ELE runs its own ROM [VERIFY]. The A55 cluster and the M7 stay in reset.",
         s: { rom: "on", m33: "on glow v1", fetch: "on", ele: "pw v1", a55: "pw", m7: "pw", tcm: "pw", rst: "on" },
         pin: [478, 96],
         dur: 5200,
@@ -587,21 +587,23 @@
       label: "FlexSPI NOR",
       ctl: "FlexSPI",
       ctlSub: "NOR flash",
-      read: "after FCB",
-      pick: "The pins select FlexSPI (serial NOR) boot.",
-      init: "The ROM brings up FlexSPI in a slow, safe mode and reads the FlexSPI configuration block (FCB), which tells it how to drive this particular flash chip.",
+      read: "@ 4 KiB, after FCB",
+      pick: "The pins select FlexSPI serial NOR boot. (FlexSPI serial NAND is a separate boot mode.)",
+      init: "The ROM brings up FlexSPI with conservative default settings and reads the FlexSPI configuration block (FCB), which tells it how to drive this particular flash chip.",
       copy: "With the flash configured, it copies the first container header into OCRAM.",
       segs: [
-        [20, 150, "FCB", "meta"],
-        [170, 250, "flash.bin", "boot"],
+        [20, 40, "", "free"],
+        [60, 110, "FCB", "meta"],
+        [170, 250, "container #1 …", "boot"],
         [420, 360, "rest of the flash", "free"],
       ],
       ticks: [
         [20, "0"],
-        [170, "container"],
+        [60, "1 KiB"],
+        [170, "4 KiB"],
       ],
       hx: 175,
-      note: ["FCB: read commands, dummy cycles and clock for this chip. Exact offsets: see the reference manual.", ""],
+      note: ["FCB at 1 KiB, container #1 at 4 KiB in imx-mkimage's FlexSPI build: ", "make flash_a55_flexspi"],
     },
     usb: {
       label: "USB",
@@ -640,7 +642,7 @@
     var all = tab === "all";
     var d = DEV[all ? "sd" : tab];
     var Hh = all ? 520 : 470;
-    var s = svgOpen(u, 800, Hh, "Flowchart of how the i.MX95 BootROM picks a boot device and falls back to USB serial download");
+    var s = svgOpen(u, 800, Hh, "Flowchart of how the i.MX95 BootROM picks a boot device, with the secondary, recovery and serial download paths");
 
     // edges
     s += wire("eIn", "M150,61 H174", "c-acc", u);
@@ -651,7 +653,7 @@
     s += wire("eNo", "M618,93 V134", "c-acc", u);
     s += wl(626, 118, "no");
     s += wire("eFail", "M618,187 V212 H425 V234", "c-acc", u);
-    s += wl(520, 206, "nothing valid", "middle");
+    s += wl(520, 206, "nothing valid [VERIFY]", "middle");
     s += wire("eSer", "M225,93 V265 H289", "c-acc", u);
     s += wl(233, 160, "serial");
     s += wl(233, 172, "download");
@@ -666,7 +668,7 @@
     s += blk("nRead", 435, 35, 125, 52, "c-sram", "read header", [all ? "→ OCRAM" : d.read]);
     s += diamond("dOk", 618, 61, 45, 32, "c-acc", "valid?", ["tag 0x87"]);
     s += blk("nGo", 675, 35, 110, 52, "c-ok", "continue", ["→ ELE FW, part 2"]);
-    s += blk("nSec", 559, 135, 118, 52, "c-bad", "secondary", ["image set"]);
+    s += blk("nSec", 559, 135, 118, 52, "c-bad", "fallbacks", ["2nd set · SPI1/2"]);
     s += blk("nUsb", 290, 235, 270, 60, "c-acc", "Serial download (USB)", ["the ROM waits for a host"]);
     s += badge("ok", 650, 36, true);
     s += badge("bad", 650, 36, false);
@@ -698,7 +700,7 @@
         s += stripRow(DEV[k], y, 24, 120, 660 / 760, true);
       });
       s +=
-        '<text class="note" x="20" y="490">SD: flash.bin at 32 KiB · eMMC: boot0 hardware partition, offset 0 · FlexSPI: FCB first, then the container</text>';
+        '<text class="note" x="20" y="490">SD: flash.bin at 32 KiB · eMMC: boot0 hardware partition, offset 0 · FlexSPI NOR: FCB at 1 KiB, container at 4 KiB</text>';
       s += '<text class="note" x="20" y="508">USB serial download reads no boot media: the host sends flash.bin with uuu.</text>';
     }
     return s + "</svg>";
@@ -713,13 +715,16 @@
       return [
         first,
         { cap: "The pins select serial download. The ROM skips the boot media completely.", s: { dMode: "on", eIn: "on", eSer: "on", nCtl: "dim" } },
-        { cap: "The ROM brings up the USB controller and enumerates as a USB device, then waits for a host.", s: { nUsb: "on" } },
+        {
+          cap: "The ROM brings up the USB controller and enumerates as a USB device on USB1 (the datasheet lists USB1 and USB2), then waits for a host.",
+          s: { nUsb: "on" },
+        },
         {
           cap: "On the host, the board appears in lsusb with NXP's vendor ID, 1fc9. uuu finds it and talks to the ROM.",
           s: { term: "on", eHost: "on" },
         },
         {
-          cap: 'uuu sends flash.bin into on-chip memory. From here the boot continues exactly as from SD: container #1, the ELE firmware, and so on. Plain "uuu flash.bin" only boots the image; "uuu -b emmc flash.bin" also writes it to eMMC.',
+          cap: 'uuu streams flash.bin to the ROM (SDPS), which loads it as it would from a boot device: container #1, the ELE firmware, and so on. Plain "uuu flash.bin" only boots the image into RAM; "uuu -b emmc flash.bin" also writes it to eMMC boot0.',
           s: { fb: "show", strip: "on" },
           mv: { fb: { to: [-215, 18] } },
           dur: 6400,
@@ -738,12 +743,12 @@
         dur: 4400,
       },
       {
-        cap: "What if the header is missing, for example on a blank card, or with flash.bin written at the wrong offset? The ROM tries the secondary image set, if one is configured.",
+        cap: "What if the header is missing, for example on a blank card, or with flash.bin written at the wrong offset? Depending on fuses, the ROM can try a secondary image set, then a recovery device, which the datasheet limits to SPI1 or SPI2.",
         s: { eGo: "", nGo: "", ok: "", bad: "on", eNo: "bad", nSec: "on" },
         dur: 5000,
       },
       {
-        cap: "If no valid image is found anywhere, the ROM falls back to serial download: the board enumerates over USB and waits for uuu. The board looks dead, but the ROM is running.",
+        cap: "If nothing valid is found, the ROM can end up in serial download, enumerating over USB and waiting for uuu, unless the fuses disable it [VERIFY in the RM]. The board looks dead, but the ROM is running.",
         s: { eFail: "bad", nUsb: "on", eHost: "on", term: "on" },
         dur: 5600,
       },
