@@ -30,7 +30,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-cameras-on-i-mx95-part-1-from-photons-to-dev-video",
+        },{id: "post-how-an-embedded-soc-boots-part-1-from-power-to-the-first-instruction",
+        
+          title: "How an Embedded SoC Boots, Part 1: From Power to the First Instruction...",
+        
+        description: "The first post in a series on how a modern embedded SoC boots, from power-on to Linux PID 1. What happens before any console output, from power sequencing and reset to the BootROM choosing a boot device.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/soc-boot-part1/";
+          
+        },
+      },{id: "post-cameras-on-i-mx95-part-1-from-photons-to-dev-video",
         
           title: "Cameras on i.MX95, Part 1: From Photons to /dev/video",
         
