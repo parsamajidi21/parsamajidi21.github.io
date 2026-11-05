@@ -61,7 +61,7 @@ The order matters. Powering one domain before another can drive current through 
 1. The **always-on** domain (the battery-backed BBSM supply) comes up first and goes down last.
 2. The **core logic** rails: VDD_SOC for the SoC logic, and VDD_ARM for the A55 cluster.
 3. The 0.8 V analog, PLL and PHY supplies, and then the 1.8 V supplies.
-4. The **DRAM interface** rails, VDD2H and then VDDQ. The memory chip has its own rails and its own ordering rules in the LPDDR5 standard and its datasheet **[VERIFY for your memory part]**.
+4. The **DRAM interface** rails, VDD2H and then VDDQ. The memory chip has its own rails and its own power-up order, defined by the LPDDR5 standard (JESD209-5) and the memory datasheet. The PMIC sequence has to satisfy both the SoC and the memory.
 5. The 3.3 V I/O, and the SD card's switchable I/O supply.
 6. **Reset release**: the power-on reset input, POR_B, is held asserted for the whole sequence and released once every rail is in regulation. On NXP's reference designs the PMIC drives it; a board can also use a separate supervisor.
 
