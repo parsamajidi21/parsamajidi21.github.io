@@ -510,7 +510,7 @@
         dur: 5200,
       },
       {
-        cap: "The ROM works only from on-chip memory, here the M33's own TCM, for its stack, data and the images it loads. The DDR is powered, but still locked.",
+        cap: "The ROM works only from on-chip memory: its stack and data sit in a reserved part of the M33's TCM, and images go to their load addresses in on-chip RAM. The DDR is powered, but still locked.",
         s: { ocram: "on v1", lpddr: "pw lock v1 pulse" },
         pin: [592, 164],
       },

@@ -50,22 +50,22 @@ The boot core is the **M33**, not the A55. It runs three pieces of firmware in t
 2. The **OEI** (Optional Executable Image), which initializes the DRAM and returns to the ROM (part 3).
 3. The **System Manager**, which owns power, clocks and resets and serves the application cores over SCMI (part 4).
 
-The pattern is common on recent SoCs: the most privileged software runs on a small core that boots first, and the big application cores start later, as its clients. Older parts work differently. On the i.MX8M, for example, the ROM runs on the first Cortex-A53 core and the Cortex-M core is an optional extra. Which core runs the ROM is the first thing to find out for any new SoC, because it tells you where to look when nothing happens.
+On the i.MX95, the firmware that owns the hardware runs on the small core that boots first, and the big application cores start later, as its clients. Several recent SoCs use a similar split, but it isn't universal: some put the system controller on a dedicated microcontroller that isn't the boot core, and many simply boot on an application core. Older i.MX parts are an example of the last kind. On the i.MX8M, for example, the ROM runs on the first Cortex-A53 core and the Cortex-M core is an optional extra. Which core runs the ROM is the first thing to find out for any new SoC, because it tells you where to look when nothing happens.
 
 ## Before the first instruction: power
 
-Nothing runs until the power rails are up. A **PMIC** (power management IC) generates the board's rails from the input supply. Its **OTP** (one-time-programmable memory) holds the power-up sequence: which rails turn on, in which order, at what voltage and with what delay. NXP pairs the i.MX95 with its PF09 PMIC family, but the principle is the same for any PMIC.
+Nothing runs until the power rails are up. A **PMIC** (power management IC) generates the board's rails from the input supply. Its **OTP** (one-time-programmable memory) holds the power-up sequence: which rails turn on, in which order, at what voltage and with what delay. NXP's reference power design for the i.MX95 splits this between two parts: a **PF09** PMIC, which sequences the board and supplies most of the rails, and **PF53** regulators for the high-current VDD_SOC and VDD_ARM rails (AN14910). The FRDM i.MX 95 Pro board uses this split (a PF09 plus a PF5302 for VDD_SOC); I haven't checked the 19 × 19 EVK schematic **[VERIFY for the EVK]**. Other boards may use other PMICs; the principle is the same.
 
-The order matters. Powering one domain before another can drive current through protection diodes into an unpowered domain, or leave a block in an undefined state. The datasheet of every SoC gives a power-up sequence, and it usually looks like this:
+The order matters. Powering one domain before another can drive current through protection diodes into an unpowered domain, or leave a block in an undefined state. Every SoC datasheet specifies its own power-up sequence. The i.MX95's, simplified, goes like this, and other SoCs follow a similar pattern with different details:
 
-1. The **always-on** domain (battery-backed or "SNVS/BBSM" logic) comes up first and goes down last.
-2. The **core logic** rails (on the i.MX95, VDD_SOC and VDD_ARM), at well under 1 V.
-3. The analog, PLL and PHY supplies, and the 1.8 V I/O.
-4. The **DRAM** rails, in the order the memory standard requires.
-5. The 3.3 V I/O.
-6. **Reset release**: the PMIC or a supervisor releases the power-on reset (POR_B on i.MX) once every rail is in regulation.
+1. The **always-on** domain (the battery-backed BBSM supply) comes up first and goes down last.
+2. The **core logic** rails: VDD_SOC for the SoC logic, and VDD_ARM for the A55 cluster.
+3. The 0.8 V analog, PLL and PHY supplies, and then the 1.8 V supplies.
+4. The **DRAM interface** rails, VDD2H and then VDDQ. The memory chip has its own rails and its own ordering rules in the LPDDR5 standard and its datasheet **[VERIFY for your memory part]**.
+5. The 3.3 V I/O, and the SD card's switchable I/O supply.
+6. **Reset release**: the power-on reset input, POR_B, is held asserted for the whole sequence and released once every rail is in regulation. On NXP's reference designs the PMIC drives it; a board can also use a separate supervisor.
 
-The core voltage isn't one fixed number. Many SoCs run the core at different voltages for different performance modes, so the value you measure depends on the part, the PMIC configuration and the firmware. Compare it with your schematic, not with another board.
+The core voltage isn't one fixed number. The i.MX95 datasheet lists different VDD_SOC values for different drive modes, so the value you measure depends on the part, the PMIC configuration and the firmware. Compare it with your schematic, not with another board.
 
 When reset is released, the SoC latches its **boot-mode pins**. Changing the boot switches after this has no effect until the next reset.
 
@@ -73,13 +73,13 @@ From here on, the DRAM is **powered but unusable**. It holds nothing, and the DD
 
 ## The BootROM
 
-The **BootROM** is mask ROM inside the SoC. It is fixed in silicon and can't be updated; fuses can only adjust what it does. Out of reset, the boot core fetches its first instruction from it, and every other core stays in reset.
+The **BootROM** is mask ROM inside the SoC. It is fixed in silicon and can't be updated; fuses can only adjust what it does. Out of reset, the boot core fetches its first instruction from it. On the i.MX95 the A55 cluster and the M7 stay in reset, while the ELE starts its own ROM in parallel (more below).
 
 The ROM's world is small:
 
 - **Code** runs from ROM.
-- **Working memory** is on-chip RAM. On the i.MX95 that is the M33's own tightly coupled memory (TCM). DRAM is off limits.
-- **It prints nothing.** BootROMs are generally silent. The first console output comes from later firmware, and only if it was built with a console enabled.
+- **Working memory** is on-chip RAM. On the i.MX95 the ROM keeps its own stack and data in a reserved part of the M33's tightly coupled memory (TCM). The images it loads go to the load addresses given in the image headers: the M33 firmware into the TCM, the A55's SPL into the general-purpose on-chip RAM (OCRAM). DRAM is off limits until it has been initialized.
+- **It prints nothing.** The i.MX95's ROM doesn't use a UART at all (the reference manual's list of hardware the ROM uses has none). Many other BootROMs are silent too, but not all, so check your part. On the i.MX95, the first console output comes from later firmware, and only if it was built with a console enabled.
 
 Which console prints first depends on the BSP:
 
@@ -89,9 +89,9 @@ Which console prints first depends on the BSP:
 | OEI, System Manager              | M33 debug UART        | when built with debug output, or by default |
 | SPL, TF-A, OP-TEE, U-Boot, Linux | A55 console UART      | depends on each one's console configuration |
 
-On a board with a debug USB port, several UARTs often come out of one USB-serial chip. Find out which one belongs to which core before you decide a board is dead: on the i.MX95 the earliest output appears on the M33 UART, not on the Linux console.
+On a board with a debug USB port, several UARTs often come out of one USB-serial chip. Find out which one belongs to which core before you decide a board is dead: on the i.MX95 the earliest output, if any, comes from the OEI or the System Manager on the M33 UART, not on the Linux console.
 
-At the same time, the **secure enclave** (the ELE on the i.MX95) comes out of reset and runs its own internal ROM. The boot ROM loads images and asks the enclave to authenticate them. The enclave can't do much until its full firmware is loaded from the first image, which is the last step of this post and the start of part 2.
+At the same time, the **secure enclave** (the ELE on the i.MX95) comes out of reset and runs its own internal ROM. The two ROMs work together: the M33 ROM fetches images from the boot device, and the ELE ROM handles secure boot, starting with the NXP-signed ELE firmware in the first container. Once that firmware runs, the ELE also provides runtime services (key storage, crypto, fuse access) to the later stages. The boot image holds more than the ELE firmware: a second container carries the OEI, the System Manager, the A55 bootloader and optional M7 firmware. Loading and authenticating the first container is the last step of this post and the start of part 2.
 
 Step through the whole sequence below. The timeline at the bottom shows the rails and POR_B coming up; it is simplified and not to scale.
 
@@ -112,14 +112,14 @@ Most SoCs combine them into three kinds of boot mode:
 
 The pin encodings differ between parts, even within one family, and how the pins reach a switch is a board decision. NXP's i.MX95 EVK has a four-position switch; the smaller FRDM board brings out only two of the pins. Always take the switch settings from your board's documentation, never from another board or another SoC.
 
-When the selected device has no valid image, the ROM doesn't simply give up. A typical fallback order is:
+When the selected device has no valid image, many ROMs try other sources before giving up. The i.MX95 reference manual documents this order:
 
-1. The **primary** image on the selected device.
-2. A **secondary** copy at another offset on the same device, if fuses enable it.
-3. A **recovery** device such as a small SPI flash, if fuses enable it.
-4. **USB serial download.**
+1. The **primary** image set on the primary boot device: SD, eMMC, FlexSPI NOR or SPI NAND.
+2. A **secondary** image set on the same device, at an offset set by fuses, if those fuses are programmed.
+3. A **recovery** device: a serial NOR flash or EEPROM on LPSPI1 or LPSPI2, only if a fuse enables recovery.
+4. **USB serial download**, on USB1 (some parts use USB2 instead), unless a fuse disables it.
 
-On the i.MX95 the ROM resets the SoC between these attempts. On a scope, a failing board shows a burst of boot-device activity, a reset, another burst, and finally USB enumeration. Secured products often disable serial download by fuse; then a board with no valid image just stops.
+Between stages, the i.MX95 ROM records the next stage in a reset-controller register and resets the SoC. So I'd expect a board with no valid image to access its boot device, reset, try again, and eventually enumerate on USB; I haven't captured this on a scope myself. On a secured product with serial download disabled, a board with no valid image just stops. Which stages are active depends on the fuses, so the exact behaviour differs between boards, and NXP's documentation is per silicon revision.
 
 ## Boot devices: where the ROM reads
 
@@ -127,13 +127,13 @@ Once the device is chosen, the ROM brings up its controller and reads the first 
 
 | Device  | Where the image starts (i.MX95)                    | Why                                                 |
 | ------- | -------------------------------------------------- | --------------------------------------------------- |
-| SD card | **32 KiB** from the start of the card              | leaves room for the partition table                 |
+| SD card | **32 KiB** from the start of the card              | fixed by the ROM; clears the partition table        |
 | eMMC    | offset 0 of a **boot** hardware partition          | the boot partitions sit outside the user area       |
 | SPI NOR | after a small **configuration block** for the chip | the ROM needs to learn how to drive this flash chip |
 
-The reasons hold for any SoC:
+The offsets themselves are fixed by each SoC's ROM, but the reasoning behind them carries over:
 
-- **SD:** a GPT with the usual 128 entries fills the first 17 KiB of the card, so the boot image has to start after it. The first real partition starts well after the boot image, often at a few MiB. Writing the image is a single `dd`:
+- **SD:** 32 KiB is where the i.MX95 ROM looks; it's part of the documented boot-image layout, not something you choose. A useful side effect is that the image doesn't collide with the partition table: a GPT with the usual 128 entries fills the first 17 KiB of the card. Older i.MX parts read the image at 1 KiB, which clashes with a GPT. The first real partition starts well after the boot image, often at a few MiB. Writing the image is a single `dd`:
 
   ```bash
   sudo dd if=flash.bin of=/dev/sdX bs=1k seek=32 conv=fsync
@@ -141,10 +141,10 @@ The reasons hold for any SoC:
 
   Forgetting `seek=32` is the classic mistake: it overwrites the partition table and leaves the ROM nothing to find.
 
-- **eMMC:** the boot partitions (boot0, boot1) are separate hardware areas, outside the user area that holds your partition table. Nothing else lives there, and the image survives a reflash of the user area.
-- **SPI NOR:** flash chips differ in commands, dummy cycles and maximum clock. The ROM starts in a slow mode that every chip supports, reads a configuration block from a known offset, then reconfigures the controller and reads the image. So a NOR image is a separate build with that block included. You can't write the SD image to NOR and expect it to boot.
+- **eMMC:** an eMMC has two boot partitions (boot0, boot1) and a user area, all separate hardware areas. A setting in the eMMC itself (`PARTITION_CONFIG`, set with `mmc partconf` in U-Boot) selects which one it boots from. The bootloader usually goes in the selected boot partition, often boot0, where nothing else lives and it survives a reflash of the user area. The i.MX95 ROM can also boot from the user area, at 32 KiB like SD.
+- **SPI NOR:** flash chips differ in commands, dummy cycles and maximum clock. The ROM starts in a slow mode that every chip supports, reads a configuration block from a known offset, then reconfigures the controller and reads the image. On the i.MX95 this is the FlexSPI Configuration Block (FCB), with the read settings for that flash chip. `imx-mkimage`'s FlexSPI target (`make flash_a55_flexspi`) generates it and places it at 1 KiB, before the image at 4 KiB. So a NOR image is a separate build. You can't write the SD image to NOR and expect it to boot.
 
-On SD, you can see the start of this on a scope: the card is first identified with a clock of 400 kHz or less, as the SD specification requires, before the bus speeds up.
+On SD, the SD specification requires the host to identify the card with a clock of 400 kHz or less. Then it raises the clock according to what the card and controller support. That slow start is the first thing to look for with a scope on the SD clock line.
 
 Pick a device in the figure below, then step through what the ROM does with it, including the fallback paths when there is no valid image:
 
@@ -176,22 +176,22 @@ uuu -b emmc flash.bin
 uuu -bshow emmc
 ```
 
-The first command boots the bootloader over USB and changes nothing on the board, which makes it the quickest way to test a new `flash.bin`. The built-in `emmc` script boots the same image, then uses fastboot in the running U-Boot to write it to the eMMC boot partition and make that partition bootable. The scripts change between releases, so check yours with `uuu -bshow`.
+The first command loads the bootloader into RAM over USB and changes nothing on the board's storage, which makes it the quickest way to test a new `flash.bin`. `-b` selects one of uuu's built-in scripts. The `emmc` script boots the same image, then uses fastboot in the running U-Boot to write it to the eMMC boot partition and select that partition with `mmc partconf`. That needs a U-Boot with fastboot support, which NXP's BSP builds have. A related script, `emmc_all`, also writes a full disk image (for example a Yocto `.wic`) to the eMMC user area. The scripts and the U-Boot side change between uuu and BSP releases, so check yours with `uuu -bshow`.
 
 ## What this means when you debug a real board
 
-Everything in this post happens before the first character on any UART. A silent board can be stuck anywhere from the PMIC to the secure enclave firmware, so work from the bottom up and measure instead of guessing:
+Most of what this post covers happens before the A55 console is up. On the i.MX95 nothing in this post prints: the ROM is silent, and the earliest possible output comes from the OEI or the System Manager on the M33 UART, and only if they were built with debug output. A silent board can be stuck anywhere from the PMIC to the secure enclave firmware, so work from the bottom up and measure instead of guessing:
 
-| Symptom                                              | Look at first                                                                                                      |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| One or more rails missing or wrong                   | PMIC configuration, a fault the PMIC latched, a shorted rail. Measure every rail and read the PMIC fault registers |
-| Rails fine, reset stays asserted                     | A rail just outside its power-good window, a supervisor holding reset, a missing pull-up on the reset line         |
-| Reset released, boot device never accessed           | Boot switches (latched at reset), boot fuses, power to the boot device; check whether the board enumerates on USB  |
-| Bursts of boot-device activity, then USB enumeration | No valid image: wrong offset, blank media, or an image built for another board or boot device                      |
-| Board in serial download doesn't appear on the host  | Wrong USB port, a charge-only cable, USB supply problems, or serial download disabled by fuse                      |
-| Image is read, nothing ever prints                   | Firmware for the wrong silicon revision, a signature failure, or a later stage failing with its debug output off   |
+| Symptom                                             | Look at first                                                                                                      |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| One or more rails missing or wrong                  | PMIC configuration, a fault the PMIC latched, a shorted rail. Measure every rail and read the PMIC fault registers |
+| Rails fine, reset stays asserted                    | A rail just outside its power-good window, a supervisor holding reset, a missing pull-up on the reset line         |
+| Reset released, boot device never accessed          | Boot switches (latched at reset), boot fuses, power to the boot device; check whether the board enumerates on USB  |
+| Boot device read, then USB enumeration              | No valid image: wrong offset, blank media, or an image built for another board or boot device                      |
+| Board in serial download doesn't appear on the host | Wrong USB port, a charge-only cable, USB supply problems, or serial download disabled by fuse                      |
+| Image is read, nothing ever prints                  | Firmware for the wrong silicon revision, a signature failure, or a later stage failing with its debug output off   |
 
-The wrong silicon revision is easy to hit on new parts: the i.MX95 has separate secure enclave firmware for early and production silicon, and an image built for one doesn't boot on the other. Check the marking on the chip against what you built.
+The wrong silicon revision is easy to hit on new parts, because firmware images can be revision-specific. The U-Boot documentation for the i.MX95 EVK lists separate ELE firmware containers for A0 and B0 silicon, and an image built for one doesn't boot on the other. Check the marking on the chip against what you built.
 
 Two habits save time at this stage. First, keep a known-good SD card around: if it boots, the hardware up to the ROM is fine, and the problem is in your image. Second, when you bring up a new board, scope the rails and the reset line once at power-on and save the trace. When a later board revision fails to boot, you have something to compare against.
 
@@ -202,11 +202,13 @@ The ROM has found a valid image header and handed the secure enclave its firmwar
 ## Sources
 
 - [U-Boot documentation: i.MX95 EVK](https://docs.u-boot.org/en/latest/board/nxp/imx95_evk.html): firmware files, silicon revisions, the SD `dd` command
-- [NXP, _i.MX 95 Applications Processors Data Sheet for Industrial Products_](https://www.nxp.com/docs/en/data-sheet/IMX95IEC.pdf): power-up sequence, boot modes
-- NXP, _i.MX 95 Applications Processor Reference Manual_, "System Boot" chapter (available from NXP with an account)
+- [NXP, _i.MX 95 Applications Processors Data Sheet for Industrial Products_](https://www.nxp.com/docs/en/data-sheet/IMX95IEC.pdf): power-up sequence, operating voltages, boot modes
+- NXP, _i.MX 95 Applications Processor Reference Manual_, "System Boot" chapter (available from NXP with an account): boot stages and fallback, ROM memory use, image offsets, ELE ROM, recovery and serial download devices
+- [NXP, PF09 product page](https://www.nxp.com/products/PF09), AN14910 _PF09 PMIC Hardware Design Guidelines_ and UM12527 _FRDM-IMX95-PRO Board User Manual_: PF09/PF53 power architecture
 - [NXP, Getting Started with the i.MX 95 19 mm × 19 mm EVK](https://www.nxp.com/document/guide/getting-started-with-the-i-mx-95-19-mm-x-19-mm-evk-board:GS-IMX95LPD5EVK-19) and [Getting Started with FRDM-IMX95](https://www.nxp.com/document/guide/getting-started-with-frdm-imx95:GS-FRDM-IMX95): boot switches, debug UARTs
 - [nxp-imx/imx-mkimage](https://github.com/nxp-imx/imx-mkimage), [nxp-imx/imx-oei](https://github.com/nxp-imx/imx-oei), [nxp-imx/imx-sm](https://github.com/nxp-imx/imx-sm): the boot image and the M33 firmware (parts 2–4)
-- [nxp-imx/mfgtools (uuu)](https://github.com/nxp-imx/mfgtools): USB IDs and built-in scripts
+- [nxp-imx/mfgtools (uuu)](https://github.com/nxp-imx/mfgtools): USB IDs and the built-in `emmc` and `emmc_all` scripts
+- JEDEC, _JESD209-5: Low Power Double Data Rate 5 (LPDDR5)_, and your memory vendor's datasheet: DRAM rails and power-up sequence
 - SD Association, _Physical Layer Simplified Specification_: card identification at ≤ 400 kHz
 - UEFI Forum, _UEFI Specification_, GPT chapter: partition table size and location
 
