@@ -28,7 +28,8 @@ nav_order: 7
     {% endfor %}
   </ol>
 
-  {% if protocol_posts.size == 0 %}
+{% if protocol_posts.size == 0 %}
+
   <p>Coming soon...</p>
   {% endif %}
 </div>

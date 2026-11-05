@@ -28,7 +28,8 @@ nav_order: 6
     {% endfor %}
   </ol>
 
-  {% if tinyml_posts.size == 0 %}
+{% if tinyml_posts.size == 0 %}
+
   <p>Coming soon...</p>
   {% endif %}
 </div>

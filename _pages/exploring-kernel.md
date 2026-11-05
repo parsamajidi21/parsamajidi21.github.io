@@ -28,7 +28,8 @@ nav_order: 5
     {% endfor %}
   </ol>
 
-  {% if kernel_posts.size == 0 %}
+{% if kernel_posts.size == 0 %}
+
   <p>Coming soon...</p>
   {% endif %}
 </div>

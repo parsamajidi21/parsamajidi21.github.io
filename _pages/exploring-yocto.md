@@ -28,7 +28,8 @@ nav_order: 3
     {% endfor %}
   </ol>
 
-  {% if yocto_posts.size == 0 %}
+{% if yocto_posts.size == 0 %}
+
   <p>Coming soon...</p>
   {% endif %}
 </div>
