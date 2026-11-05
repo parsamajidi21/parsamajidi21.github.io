@@ -47,7 +47,7 @@ A modern application processor has more than one kind of core. On the i.MX95:
 The boot core is the **M33**, not the A55. It runs three pieces of firmware in turn:
 
 1. The **BootROM**, in mask ROM. It picks the boot device and loads the first images.
-2. The **OEI** (Optional Executable Image), which initializes the DRAM and returns to the ROM (part 3).
+2. The **OEI** (Optional Executable Image), which initializes the DRAM and returns to the ROM (part 3). NXP also uses OEIs for other early setup, such as TCM initialization, and the set of OEI images differs between A0 and B0 silicon.
 3. The **System Manager**, which owns power, clocks and resets and serves the application cores over SCMI (part 4).
 
 On the i.MX95, the firmware that owns the hardware runs on the small core that boots first, and the big application cores start later, as its clients. Several recent SoCs use a similar split, but it isn't universal: some put the system controller on a dedicated microcontroller that isn't the boot core, and many simply boot on an application core. Older i.MX parts are an example of the last kind. On the i.MX8M, for example, the ROM runs on the first Cortex-A53 core and the Cortex-M core is an optional extra. Which core runs the ROM is the first thing to find out for any new SoC, because it tells you where to look when nothing happens.
@@ -61,13 +61,13 @@ The order matters. Powering one domain before another can drive current through 
 1. The **always-on** domain (the battery-backed BBSM supply) comes up first and goes down last.
 2. The **core logic** rails: VDD_SOC for the SoC logic, and VDD_ARM for the A55 cluster.
 3. The 0.8 V analog, PLL and PHY supplies, and then the 1.8 V supplies.
-4. The **DRAM interface** rails, VDD2H and then VDDQ. The memory chip has its own rails and its own power-up order, defined by the LPDDR5 standard (JESD209-5) and the memory datasheet. The PMIC sequence has to satisfy both the SoC and the memory.
+4. The SoC's **DRAM interface** rails, VDD2H_DDR and then VDDQ_DDR. The memory chip has its own rails (VDD1, VDD2H, VDD2L, VDDQ) and its own power-up order, defined by the LPDDR5 standard (JESD209-5) and the memory datasheet. Its 1.8 V VDD1 comes up first, so it usually shares the 1.8 V step above. The PMIC sequence has to satisfy both the SoC and the memory.
 5. The 3.3 V I/O, and the SD card's switchable I/O supply.
 6. **Reset release**: the power-on reset input, POR_B, is held asserted for the whole sequence and released once every rail is in regulation. On NXP's reference designs the PMIC drives it; a board can also use a separate supervisor.
 
 The core voltage isn't one fixed number. The i.MX95 datasheet lists different VDD_SOC values for different drive modes, so the value you measure depends on the part, the PMIC configuration and the firmware. Compare it with your schematic, not with another board.
 
-When reset is released, the SoC latches its **boot-mode pins**. Changing the boot switches after this has no effect until the next reset.
+When POR_B is released, the SoC latches its **boot-mode pins**. Changing the boot switches after this has no effect until the next power-on reset.
 
 From here on, the DRAM is **powered but unusable**. It holds nothing, and the DDR controller can't talk to it reliably until it has been initialized and the link trained, which happens later (part 3). Until then, all code and data live in on-chip memory.
 
@@ -133,7 +133,7 @@ Once the device is chosen, the ROM brings up its controller and reads the first 
 
 The offsets themselves are fixed by each SoC's ROM, but the reasoning behind them carries over:
 
-- **SD:** 32 KiB is where the i.MX95 ROM looks; it's part of the documented boot-image layout, not something you choose. A useful side effect is that the image doesn't collide with the partition table: a GPT with the usual 128 entries fills the first 17 KiB of the card. Older i.MX parts read the image at 1 KiB, which clashes with a GPT. The first real partition starts well after the boot image, often at a few MiB. Writing the image is a single `dd`:
+- **SD:** 32 KiB is where the i.MX95 ROM looks; it's part of the documented boot-image layout, not something you choose. A useful side effect is that the image doesn't collide with the partition table: a GPT with the usual 128 entries fills the first 17 KiB of the card. The offset differs between families: the i.MX6 and i.MX7 read the image at 1 KiB, which clashes with a GPT; the i.MX8MQ and i.MX8MM use 33 KiB; the i.MX8MN, i.MX8MP, i.MX8QXP and i.MX93 use 32 KiB, like the i.MX95. The first real partition starts well after the boot image, often at a few MiB. Writing the image is a single `dd`:
 
   ```bash
   sudo dd if=flash.bin of=/dev/sdX bs=1k seek=32 conv=fsync
@@ -162,6 +162,7 @@ Each vendor has its own USB protocol and host tool for this. On the i.MX95, the 
 # Linux host: install udev rules once, so uuu doesn't need root
 uuu -udev | sudo tee /etc/udev/rules.d/70-uuu.rules
 sudo udevadm control --reload
+sudo udevadm trigger   # or replug the board
 
 # Is the ROM waiting?
 lsusb | grep -i 1fc9
@@ -189,9 +190,11 @@ Most of what this post covers happens before the A55 console is up. On the i.MX9
 | Reset released, boot device never accessed          | Boot switches (latched at reset), boot fuses, power to the boot device; check whether the board enumerates on USB  |
 | Boot device read, then USB enumeration              | No valid image: wrong offset, blank media, or an image built for another board or boot device                      |
 | Board in serial download doesn't appear on the host | Wrong USB port, a charge-only cable, USB supply problems, or serial download disabled by fuse                      |
-| Image is read, nothing ever prints                  | Firmware for the wrong silicon revision, a signature failure, or a later stage failing with its debug output off   |
+| Image is read, nothing ever prints                  | A later stage failing with its debug output off, or a signature failure on a closed (secured) part                 |
 
-The wrong silicon revision is easy to hit on new parts, because firmware images can be revision-specific. The U-Boot documentation for the i.MX95 EVK lists separate ELE firmware containers for A0 and B0 silicon, and an image built for one doesn't boot on the other. Check the marking on the chip against what you built.
+Signature failures don't always stop the boot. On a part whose lifecycle is still OEM open, which covers most development boards, the ELE logs authentication failures of your own images and boots them anyway. Only an OEM-closed part refuses them. The ELE firmware itself is different: it is NXP-signed and always checked.
+
+That makes the wrong silicon revision a trap on new parts, because firmware images can be revision-specific. The U-Boot documentation for the i.MX95 EVK lists separate ELE firmware containers for A0 and B0 silicon, and an image built for one doesn't boot on the other. I expect that to look like the "no valid image" row above, with the ROM falling back to serial download, but I haven't tested it on a board. Check the marking on the chip against what you built.
 
 Two habits save time at this stage. First, keep a known-good SD card around: if it boots, the hardware up to the ROM is fine, and the problem is in your image. Second, when you bring up a new board, scope the rails and the reset line once at power-on and save the trace. When a later board revision fails to boot, you have something to compare against.
 
