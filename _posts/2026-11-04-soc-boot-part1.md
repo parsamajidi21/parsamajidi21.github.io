@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "Booting the i.MX95, Part 1: From Power to the First Instruction"
+title: "How an Embedded SoC Boots, Part 1: From Power to the First Instruction"
 date: 2026-11-04 00:00:00
-description: The first post in a series on how a modern NXP i.MX board boots, from power-on to Linux PID 1. What happens before any console output, from power sequencing and reset to the BootROM choosing a boot device.
+description: The first post in a series on how a modern embedded SoC boots, from power-on to Linux PID 1. What happens before any console output, from power sequencing and reset to the BootROM choosing a boot device.
 tags: linux boot
 categories: boot
 giscus_comments: true
@@ -14,7 +14,7 @@ toc:
 ---
 
 <!-- prettier-ignore-start -->
-> **TL;DR**: On a modern SoC like the i.MX95, the first instruction does not run on the application cores. The **PMIC** brings up the power rails in a fixed order and releases reset, then a **BootROM** starts on a small **boot core**. It works only from on-chip memory, reads the boot pins and fuses, brings up the boot device and reads the first image, which holds the firmware for the **secure enclave**. None of this prints to a console, so debugging this stage means knowing what to measure.
+> **TL;DR**: On a modern embedded SoC, the first instruction does not run on the application cores. The **PMIC** brings up the power rails in a fixed order and releases reset, then a **BootROM** starts on a small **boot core**. It works only from on-chip memory, reads the boot pins and fuses, brings up the boot device and reads the first image, which holds the firmware for the **secure enclave**. None of this prints to a console, so debugging this stage means knowing what to measure.
 {: .block-tip }
 
 <!-- prettier-ignore-end -->
@@ -26,13 +26,13 @@ Most embedded Linux engineers know the boot flow as "U-Boot, then the kernel". O
 | Part  | Topic                                                                     |
 | ----- | ------------------------------------------------------------------------- |
 | **1** | **From power to the first instruction: PMIC, reset, BootROM (this post)** |
-| 2     | Containers and the secure enclave: signed images and `flash.bin`          |
+| 2     | Signed boot images and the secure enclave                                 |
 | 3     | Waking up the DRAM: initialization and training                           |
-| 4     | The System Manager and SCMI                                               |
+| 4     | The system controller firmware and SCMI                                   |
 | 5     | SPL → TF-A → OP-TEE → U-Boot: exception levels and hand-offs              |
 | 6     | Linux takes over, plus a "last console line → failed stage" cheat sheet   |
 
-I use a generic i.MX95 board with LPDDR5, an SD card slot and eMMC as the running example, because it shows every stage. Most of the ideas carry over to other i.MX parts and to SoCs from other vendors; the exact pins, fuses and offsets don't, so check your part's datasheet and reference manual for those.
+The ideas apply to most modern application processors. For concrete examples I use NXP's i.MX95 on a generic board with LPDDR5, an SD card slot and eMMC, because it has every stage: a separate boot core, a secure enclave and a system controller. Other SoCs name and split these stages differently, and the exact pins, fuses and offsets always differ, so check your part's datasheet and reference manual for those.
 
 ## Which core boots first
 
@@ -105,7 +105,7 @@ The ROM's first decision is where to boot from. It has two inputs:
 - **Boot-mode pins**, latched at reset. They are often shared with other functions, so the board has to hold them at the right levels while reset is asserted.
 - **Boot fuses**, which select the boot device and its parameters (bus width, speed, controller instance) and can lock the configuration down.
 
-Most i.MX parts combine them into three kinds of boot mode:
+Most SoCs combine them into three kinds of boot mode:
 
 1. **Boot from fuses.** The fuses alone select the boot device. This is the normal setting for production hardware, because a stray switch setting can't change it.
 2. **Normal boot.** The pins select the device directly: eMMC, SD, or SPI flash. Convenient during development.
@@ -153,11 +153,11 @@ Pick a device in the figure below, then step through what the ROM does with it, 
 
 The header check is shallow on purpose: the ROM checks that an image is there before it trusts anything inside it. The signature checks come next, through the secure enclave, and are the subject of part 2.
 
-## Serial download and uuu
+## Serial download
 
 Serial download is how you recover a board with an empty or broken boot device. Select it with the boot switches rather than waiting for the ROM to fall back to it: that skips the failed attempts and works even if fallback is configured differently.
 
-In serial download mode, the i.MX ROM shows up on the host as a USB HID device with NXP's vendor ID `1fc9`. On the host, NXP's **`uuu`** (Universal Update Utility) talks to it:
+Each vendor has its own USB protocol and host tool for this. On the i.MX95, the ROM shows up on the host as a USB HID device with NXP's vendor ID `1fc9`, and NXP's **`uuu`** (Universal Update Utility) talks to it:
 
 ```bash
 # Linux host: install udev rules once, so uuu doesn't need root
@@ -198,7 +198,7 @@ Two habits save time at this stage. First, keep a known-good SD card around: if 
 
 ## What's next
 
-The ROM has found a valid image header and handed the secure enclave its firmware. Part 2 opens the image: the container format, what the enclave checks and with which keys, how the chain of trust continues, and how `flash.bin` is put together.
+The ROM has found a valid image header and handed the secure enclave its firmware. Part 2 opens the image: how signed boot images are structured, what the enclave checks and with which keys, how the chain of trust continues, and how the i.MX95's `flash.bin` is put together.
 
 ## Sources
 
