@@ -30,7 +30,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-how-an-embedded-soc-boots-part-1-from-power-to-the-first-instruction",
+        },{id: "post-how-an-embedded-soc-boots-part-2-signed-boot-images-and-the-secure-enclave",
+        
+          title: "How an Embedded SoC Boots, Part 2: Signed Boot Images and the Secure...",
+        
+        description: "The second post in a series on how a modern embedded SoC boots. How the boot ROM decides whether to trust an image, what a signed boot container looks like, and what is inside the i.MX95&#39;s flash.bin.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/soc-boot-part2/";
+          
+        },
+      },{id: "post-how-an-embedded-soc-boots-part-1-from-power-to-the-first-instruction",
         
           title: "How an Embedded SoC Boots, Part 1: From Power to the First Instruction...",
         
