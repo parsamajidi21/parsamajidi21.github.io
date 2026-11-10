@@ -1,4 +1,4 @@
-// Animated figures for the i.MX95 boot series.
+// Animated figures for the SoC boot series (i.MX95 examples).
 //
 // Usage in a post:
 //   <div class="bootviz" data-viz="poweron"></div>
@@ -102,6 +102,8 @@
     ".bv-tag[data-s~=on]{opacity:1}",
     ".bv-tag text{font-size:10.5px;fill:var(--bv-fg2)}",
     ".bv-tag text.em{fill:var(--c);font-weight:650}",
+    ".bv-tag path{fill:none;stroke:var(--c);stroke-width:1.6}",
+    ".bv-blk.k-cell .t{font-size:10.5px}",
     ".bv-seg{stroke:var(--bv-line);stroke-width:1}",
     ".bv-seg.meta{fill:color-mix(in srgb,var(--bv-fg) 9%,var(--bv-bg))}",
     ".bv-seg.boot{fill:color-mix(in srgb,var(--bv-flash) 40%,var(--bv-bg));stroke:var(--bv-flash);stroke-width:1.4}",
@@ -774,6 +776,291 @@
   };
 
   // ===========================================================================
+  // Part 2, figure 1: inside flash.bin
+  // ===========================================================================
+  var FB_CELLS = [
+    ["c1h", 20, 62, "C1 hdr", "c-ele"],
+    ["c2h", 82, 62, "C2 hdr", "c-m33"],
+    ["cEle", 154, 96, "ELE FW", "c-ele"],
+    ["cOei", 250, 70, "OEI", "c-m33"],
+    ["cSm", 320, 90, "System Mgr", "c-m33"],
+    ["cSpl", 410, 82, "SPL", "c-a55"],
+    ["c3h", 510, 62, "C3 hdr", "c-a55"],
+    ["cAtf", 572, 58, "TF-A", "c-a55"],
+    ["cUb", 630, 100, "U-Boot", "c-a55"],
+    ["cTee", 730, 50, "OP-TEE", "c-a55"],
+  ];
+
+  function svgFlashBin(u) {
+    var H = u + "-h";
+    var s = svgOpen(u, 800, 450, "Layout of an i.MX95 flash.bin with three containers, and where the boot ROM and SPL load each image");
+    s += '<text class="lbl" x="20" y="24">flash.bin · layout from imx-mkimage · not to scale</text>';
+    s += '<rect class="bv-seg free" x="144" y="40" width="10" height="28"/><rect class="bv-seg free" x="492" y="40" width="18" height="28"/>';
+    FB_CELLS.forEach(function (c) {
+      s += blk(c[0], c[1], 40, c[2], 28, "k-mem k-cell " + c[4], c[3], null, { r: 2 });
+    });
+    s += '<text class="note" x="20" y="84">0</text><text class="note" x="82" y="84">0x400</text>';
+    s += '<text class="note" x="510" y="84">next 1 KiB boundary</text>';
+    s +=
+      '<g class="bv-tag c-acc" data-id="brRom"><path d="M20,92 v6 H492 v-6"/><text class="em" x="256" y="112" text-anchor="middle">read by the boot ROM</text></g>';
+    s +=
+      '<g class="bv-tag c-a55" data-id="brSpl"><path d="M510,92 v6 H780 v-6"/><text class="em" x="645" y="112" text-anchor="middle">read later by SPL</text></g>';
+
+    // container 2 up close
+    s += '<rect class="tl-box" x="20" y="128" width="380" height="306" rx="12"/>';
+    s += '<text class="lbl" x="34" y="148">Container 2, up close</text>';
+    [
+      ["aHdr", 158, "header: tag · version · length · flags", "c-m33"],
+      ["aVer", 184, "sw_version · fuse_version · image count", "c-m33"],
+      ["aI0", 216, "image 0: OEI → M33 TCM · hash", "c-m33"],
+      ["aI1", 242, "image 1: System Manager → M33 TCM · hash", "c-m33"],
+      ["aI2", 268, "image 2: SPL → OCRAM · hash", "c-a55"],
+      ["aSb", 300, "signature block header", "c-acc"],
+      ["aSrk", 326, "SRK table: up to 4 public keys", "c-acc"],
+      ["aSig", 352, "signature", "c-acc"],
+      ["aCert", 378, "certificate (optional)", "c-acc"],
+    ].forEach(function (r) {
+      s += blk(r[0], 36, r[1], 296, 22, "k-mem k-cell " + r[3], r[2], null, { r: 2 });
+    });
+    s += '<g class="bv-tag c-ok" data-id="brSig"><path d="M340,158 H348 V348 H340"/><text class="em" x="354" y="257">signed</text></g>';
+    s += '<g class="bv-tag" data-id="hashNote"><text x="36" y="420">each hash ties an image to the signed header</text></g>';
+
+    // where things go
+    s += blk("ele", 430, 128, 160, 52, "k-core c-ele", "ELE", ["running ELE ROM", "checking", "running ELE firmware"]);
+    s += blk("fuses", 610, 128, 170, 52, "k-mem c-rom", "Fuses", ["SRK hash · 256 bit"]);
+    s += blk("tcm", 430, 200, 160, 52, "k-mem c-sram", "M33 TCM", ["0x1FFC0000"]);
+    s += blk("m33", 610, 200, 170, 52, "k-core c-m33", "Cortex-M33", ["running boot ROM", "running OEI", "running System Manager"]);
+    s += blk("ocram", 430, 272, 160, 52, "k-mem c-sram", "OCRAM", ["0x20480000"]);
+    s += blk("a55", 610, 272, 170, 52, "k-core c-a55", "Cortex-A55", ["in reset", "running SPL", "running U-Boot"]);
+    s += blk("ddr", 430, 344, 160, 72, "k-mem c-ddr", "DDR", ["not usable yet", "trained by the OEI"], { hatch: H, lock: true, ty: 18 });
+    s +=
+      '<g class="bv-tag c-a55" data-id="ddrNote"><text class="em" x="610" y="364">TF-A → 0x8A200000</text>' +
+      '<text class="em" x="610" y="380">U-Boot → 0x90200000</text><text x="610" y="396">(NXP defaults)</text></g>';
+
+    s += badge("eleOk", 590, 128, true);
+    s += badge("c2Ok", 144, 40, true);
+    s += badge("c3Ok", 572, 40, true);
+
+    s += mover("mEle", 170, 45, 64, 18, "c-ele", "ELE FW");
+    s += mover("mOei", 253, 45, 64, 18, "c-m33", "OEI");
+    s += mover("mSm", 333, 45, 64, 18, "c-m33", "SM");
+    s += mover("mSpl", 419, 45, 64, 18, "c-a55", "SPL");
+    s += mover("mAtf", 569, 45, 64, 18, "c-a55", "TF-A");
+    s += mover("mUb", 648, 45, 64, 18, "c-a55", "U-Boot");
+    return s + "</svg>";
+  }
+
+  function framesFlashBin() {
+    return [
+      {
+        cap: "flash.bin is a row of containers. On an SD card it starts at 32 KiB (part 1); offsets here are relative to that start. The container headers come first, back to back at 1 KiB steps, and the images they describe follow.",
+        s: {
+          c1h: "pw",
+          c2h: "pw",
+          cEle: "pw",
+          cOei: "pw",
+          cSm: "pw",
+          cSpl: "pw",
+          c3h: "pw",
+          cAtf: "pw",
+          cUb: "pw",
+          cTee: "pw",
+          brRom: "on",
+          brSpl: "on",
+        },
+      },
+      {
+        cap: "The first header, at offset 0, describes one image: the ELE firmware. NXP builds and signs this container, and you include it unchanged (mx95b0-ahab-container.img for B0 silicon).",
+        s: { c1h: "on", cEle: "on" },
+      },
+      {
+        cap: "The second header, at 0x400, is yours. Its image table lists the OEI, the System Manager and SPL, each with its offset in flash.bin, size, load address, entry point and hash.",
+        s: { c1h: "pw", cEle: "pw", c2h: "on", cOei: "on", cSm: "on", cSpl: "on", aHdr: "on", aVer: "on", aI0: "on", aI1: "on", aI2: "on" },
+        dur: 4600,
+      },
+      {
+        cap: "After the image table comes the signature block: a table of up to four public keys (the SRK table), the signature, and an optional certificate. The signature covers the header, the image table and the key table. The images themselves are covered through their hashes.",
+        s: { aSb: "on", aSrk: "on", aSig: "on", aCert: "pw", brSig: "on", hashNote: "on" },
+        dur: 5400,
+      },
+      {
+        cap: "The fuses hold only a hash of the SRK table. Before the ELE trusts any key in a container, it hashes the container's key table and compares the result with the fuses.",
+        s: { fuses: "on" },
+      },
+      {
+        cap: "The boot ROM hands the ELE firmware to the ELE. The ELE ROM checks it against NXP's key and starts it; from here on, the ELE firmware does the checking.",
+        s: { mEle: "show", ele: "on v2", eleOk: "on" },
+        mv: { mEle: { to: [308, 101] } },
+        delay: { ele: 1.7, eleOk: 1.7 },
+        dur: 4800,
+      },
+      {
+        cap: "The boot ROM reads the second header and asks the ELE to authenticate it: the key table against the fuse hash, then the signature over the header.",
+        s: { mEle: "", c2Ok: "on", ele: "on v2" },
+      },
+      {
+        cap: "Each image then goes to its load address and is checked against its hash. The OEI goes to the M33 TCM and runs first: it trains the DRAM and returns to the ROM (part 3).",
+        s: { mOei: "show", tcm: "on", m33: "on v1", ddr: "on v1" },
+        mv: { mOei: { to: [225, 172] } },
+        delay: { tcm: 1.6, m33: 1.6, ddr: 2.4 },
+        dur: 5200,
+      },
+      {
+        cap: "The System Manager goes to the same TCM address and replaces the OEI. SPL goes to OCRAM. The boot ROM's work ends here: the M33 jumps to the System Manager, which starts the A55 on SPL.",
+        s: { mOei: "", mSm: "show", mSpl: "show", ocram: "on", m33: "on v2", a55: "on v1" },
+        mv: { mSm: { to: [145, 172] }, mSpl: { to: [59, 244], delay: 0.5 } },
+        delay: { ocram: 2.1, m33: 1.6, a55: 2.4 },
+        dur: 5600,
+      },
+      {
+        cap: "The boot ROM never reads the third container. SPL does: it asks the ELE to authenticate the header, loads TF-A and U-Boot into the now-trained DRAM, and has each image checked against its hash. SPL only does these checks if U-Boot is built with CONFIG_AHAB_BOOT.",
+        s: { mSm: "", mSpl: "", c3Ok: "on", c3h: "on", cAtf: "on", cUb: "on", mAtf: "show", mUb: "show", ddrNote: "on", a55: "on v2" },
+        mv: { mAtf: { to: [-127, 346] }, mUb: { to: [-132, 346], delay: 0.4 } },
+        delay: { ddrNote: 1.8, a55: 2.2 },
+        dur: 6400,
+      },
+    ];
+  }
+
+  // ===========================================================================
+  // Part 2, figure 2: the chain of trust
+  // ===========================================================================
+  var TRUST_TABS = [
+    { id: "good", label: "Signed image" },
+    { id: "open", label: "Bad signature · OEM open" },
+    { id: "closed", label: "Bad signature · OEM closed" },
+  ];
+
+  var TERM = {
+    good: ["$> ahab_status", "Lifecycle: 0x00000010, OEM Open", "", "        No Events Found!"],
+    open: [
+      "$> ahab_status",
+      "Lifecycle: 0x00000010, OEM Open",
+      "  CMD = ELE_OEM_CNTN_AUTH_REQ (0x87)",
+      "  IND = ELE_BAD_KEY_HASH_FAILURE_IND (0xFA)",
+    ],
+    closed: ["(no console: nothing on the A55 ever ran)", "", "boot ROM → next boot stage (part 1)", ""],
+  };
+
+  function svgTrust(u, tab) {
+    tab = TERM[tab] ? tab : "good";
+    var H = u + "-h";
+    var s = svgOpen(u, 800, 390, "Chain of trust on the i.MX95, from the keys in the ELE ROM and fuses to U-Boot and the kernel");
+    s += '<text class="lbl" x="20" y="24">Roots of trust</text>';
+    s += blk("nxpKey", 20, 36, 200, 46, "k-mem k-rom c-rom", "NXP public key", ["inside the ELE ROM"], { hatch: H });
+    s += blk("srk", 250, 36, 310, 46, "k-mem c-rom", "Your SRK hash", ["burned into fuses"]);
+
+    s += wire("kN", "M135,82 V156", "c-rom");
+    s += wire("kS1", "M265,82 V156", "c-rom");
+    s += wire("kS2", "M525,82 V156", "c-rom");
+
+    s += '<text class="lbl" x="20" y="122">Chain of trust</text>';
+    s += blk("cRom", 20, 132, 100, 60, "k-core c-ele", "ELE ROM", ["in silicon"]);
+    s += blk("cFw", 150, 132, 100, 60, "k-core c-ele", "ELE FW", ["container 1"]);
+    s += blk("cC2", 280, 132, 100, 60, "k-mem c-m33", "Container 2", ["OEI · SM · SPL"]);
+    s += blk("cSpl", 410, 132, 100, 60, "k-core c-a55", "SPL", ["on the A55"]);
+    s += blk("cC3", 540, 132, 100, 60, "k-mem c-a55", "Container 3", ["TF-A · U-Boot"]);
+    s += blk("cOs", 670, 132, 110, 60, "c-acc k-chip", "Kernel", ["signed FIT image"]);
+    s += wire("e1", "M120,162 H148", "c-ele", u);
+    s += wire("e2", "M250,162 H278", "c-ele", u);
+    s += wire("e3", "M380,162 H408", "c-a55", u);
+    s += wire("e4", "M510,162 H538", "c-ele", u);
+    s += wire("e5", "M640,162 H668", "c-a55", u);
+    s +=
+      '<g class="bv-tag" data-id="checks"><text x="20" y="214">Each arrow is a check before a jump. The ELE does every check up to container 3; U-Boot checks the kernel itself.</text></g>';
+
+    s += badge("bFw", 250, 132, true);
+    s += badge("bC2", 380, 132, true);
+    s += badge("xC2", 380, 132, false);
+    s += badge("bC3", 640, 132, true);
+
+    s += blk("lc", 20, 244, 200, 60, "c-acc", "Lifecycle", [tab === "closed" ? "OEM closed: enforce" : "OEM open: log only"]);
+    s +=
+      '<g class="bv-tag" data-id="lcNote"><text x="20" y="324">Set once with ahab_close.</text><text x="20" y="340">There is no way back.</text></g>';
+
+    s += '<g class="bv-term" data-id="term"><rect class="box" x="250" y="244" width="530" height="96" rx="8"/>';
+    TERM[tab].forEach(function (line, k) {
+      if (!line) return;
+      var p = line.indexOf("$>") === 0;
+      s += '<text x="264" y="' + (266 + k * 20) + '">' + (p ? '<tspan class="p">=&gt;</tspan>' + esc(line.slice(2)) : esc(line)) + "</text>";
+    });
+    s += "</g>";
+    if (tab === "open")
+      s += '<g class="bv-tag" data-id="exNote"><text x="250" y="358">Example output, abridged; the exact event depends on what failed.</text></g>';
+    return s + "</svg>";
+  }
+
+  function framesTrust(tab) {
+    tab = TERM[tab] ? tab : "good";
+    var f = [
+      {
+        cap: "Two roots of trust, both fixed in the chip: NXP's public key inside the ELE ROM, and a hash of your own public keys, the SRK hash, burned into fuses.",
+        s: { nxpKey: "on", srk: "on", cRom: "on" },
+      },
+      {
+        cap: "The ELE ROM checks the ELE firmware in container 1 against NXP's key, then starts it. This check happens on every part, open or closed.",
+        s: { kN: "on", e1: "ok", cFw: "on", bFw: "on", checks: "on" },
+      },
+    ];
+    if (tab === "good") {
+      return f.concat([
+        {
+          cap: "The boot ROM asks the ELE firmware to check container 2. The ELE compares the container's key table with the fuse hash, verifies the signature, and checks every image against its hash.",
+          s: { kS1: "on", e2: "ok", cC2: "on", bC2: "on" },
+          dur: 4600,
+        },
+        { cap: "Container 2 brings SPL, and the A55 starts running it.", s: { e3: "on", cSpl: "on" } },
+        {
+          cap: "SPL asks the ELE to check container 3 with the same keys before it jumps to TF-A and U-Boot. This link only exists if U-Boot is built with CONFIG_AHAB_BOOT.",
+          s: { kS2: "on", e4: "ok", cC3: "on", bC3: "on" },
+          dur: 4600,
+        },
+        {
+          cap: "U-Boot extends the chain to the kernel, with a signed FIT image or an OS container. Setting up that link is up to you; part 6 comes back to it.",
+          s: { e5: "on", cOs: "on" },
+        },
+        {
+          cap: "On a running board, ahab_status in U-Boot shows the lifecycle and every security event the ELE recorded. A correctly signed chain shows none.",
+          s: { term: "on", lc: "on" },
+        },
+      ]);
+    }
+    var fail = {
+      cap: "This time container 2 fails the check: it is unsigned, or signed with keys whose hash doesn't match the fuses. The ELE records an event.",
+      s: { kS1: "on", e2: "bad", cC2: "on", xC2: "on" },
+    };
+    if (tab === "open") {
+      return f.concat([
+        fail,
+        {
+          cap: "But the part is still OEM open, so the boot ROM runs the images anyway. Every development board starts in this state.",
+          s: { lc: "on", e3: "on", cSpl: "on" },
+        },
+        {
+          cap: "SPL and U-Boot carry on as before. Failed checks are logged, not enforced.",
+          s: { e4: "on", cC3: "on", e5: "on", cOs: "on" },
+        },
+        {
+          cap: "The failure only shows up when you ask: ahab_status lists the recorded events. That is how you test a signed image before you close the part.",
+          s: { term: "on", exNote: "on", lcNote: "on" },
+        },
+      ]);
+    }
+    return f.concat([
+      fail,
+      {
+        cap: "The part is OEM closed, so a failed check ends this boot attempt. The boot ROM treats it like an invalid image and moves to its next boot stage (part 1): secondary image set, recovery device, serial download, as far as the fuses allow.",
+        s: { lc: "on", lcNote: "on", cSpl: "dim", cC3: "dim", cOs: "dim" },
+        dur: 5600,
+      },
+      {
+        cap: "Nothing on the A55 runs, so there is no console and no ahab_status to read. The way back is an image signed with the right keys.",
+        s: { term: "on" },
+      },
+    ]);
+  }
+
+  // ===========================================================================
   // Figure registry
   // ===========================================================================
   var LEG_CORES = [
@@ -821,6 +1108,30 @@
         ["core", "--bv-ele", "container for the ELE"],
         ["ok", "", "valid"],
         ["core", "--bv-bad", "invalid / fallback"],
+      ],
+    },
+    flashbin: {
+      kicker: "Figure 1",
+      title: "Inside flash.bin",
+      svg: svgFlashBin,
+      frames: framesFlashBin,
+      legend: LEG_CORES.concat(LEG_MEMS, LEG_MARKS),
+    },
+    trust: {
+      kicker: "Figure 2",
+      title: "The chain of trust",
+      tabsLabel: "Scenario:",
+      tabs: TRUST_TABS,
+      svg: svgTrust,
+      frames: framesTrust,
+      staticFrames: function () {
+        return framesTrust("good");
+      },
+      legend: [
+        ["mem", "--bv-rom", "root of trust"],
+        ["core", "--bv-ele", "checked by the ELE"],
+        ["ok", "", "check passed"],
+        ["core", "--bv-bad", "check failed"],
       ],
     },
   };
@@ -953,7 +1264,7 @@
     root.appendChild(h("div", "bv-head", '<div class="bv-kicker">' + def.kicker + '</div><div class="bv-title">' + esc(def.title) + "</div>"));
 
     if (def.tabs) {
-      this.tabsEl = h("div", "bv-tabs", "<span>Boot device:</span>");
+      this.tabsEl = h("div", "bv-tabs", "<span>" + esc(def.tabsLabel || "Boot device:") + "</span>");
       def.tabs.forEach(function (t) {
         var b = h("button", t.id === self.tab ? "active" : "", esc(t.label));
         b.type = "button";

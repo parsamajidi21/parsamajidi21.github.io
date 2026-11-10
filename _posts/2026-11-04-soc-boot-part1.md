@@ -200,7 +200,7 @@ Two habits save time at this stage. First, keep a known-good SD card around: if 
 
 ## What's next
 
-The ROM has found a valid image header and handed the secure enclave its firmware. Part 2 opens the image: how signed boot images are structured, what the enclave checks and with which keys, how the chain of trust continues, and how the i.MX95's `flash.bin` is put together.
+The ROM has found a valid image header and handed the secure enclave its firmware. [Part 2]({% post_url 2026-11-10-soc-boot-part2 %}) opens the image: how signed boot images are structured, what the enclave checks and with which keys, how the chain of trust continues, and how the i.MX95's `flash.bin` is put together.
 
 ## Sources
 
